@@ -19,6 +19,8 @@ namespace AeroportoBD
         {
             return Conexao;
         }
+
+        #region Companhia Aerea
         public void InsertCompanhiaAerea(CompanhiaAerea novaComp)
         {
             try
@@ -26,7 +28,21 @@ namespace AeroportoBD
                 BD bd = new BD();
                 SqlConnection conexaosql = new SqlConnection(bd.Caminho());
                 conexaosql.Open();
-                string insertComp = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,SituacaO,DataAbertura,DataCadastro,DataUltimoVoo FROM CompanhiaAerea"
+                string insertComp = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao) VALUES ('{novaComp.Cnpj}'," + $"'{novaComp.RazaoSocial}','{novaComp.DataAbertura}','{novaComp.DataUltimoVoo}','{novaComp.DataCadastro}','{novaComp.Situacao}');";
+                SqlCommand cmdINSERTcomp = new SqlCommand(insertComp, conexaosql);
+                cmdINSERTcomp.ExecuteNonQuery();
+                conexaosql.Close();
+                Console.WriteLine("Companhia inserida com sucesso!");
+                Console.ReadKey();
             }
+            catch (SqlException e)
+            {
+                if (e.Number != 2627) // chave duplicada
+                    throw;
+
+                Console.WriteLine("CNPJ já existente");
+                Console.ReadKey();
+            }
+        }
     }
 }

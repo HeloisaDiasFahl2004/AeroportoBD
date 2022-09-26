@@ -11,7 +11,7 @@ namespace AeroportoBD
         public string Cnpj { get; set; }
         public string RazaoSocial { get; set; }
         public DateTime DataAbertura { get; set; }
-        public DateTime UltimoVoo { get; set; }
+        public DateTime DataUltimoVoo { get; set; }
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
 
@@ -24,13 +24,13 @@ namespace AeroportoBD
             this.Cnpj = cnpj;
             this.RazaoSocial = razaoSocial;
             this.DataAbertura = DataAbertura;
-            this.UltimoVoo = System.DateTime.Now;
+            this.DataUltimoVoo = System.DateTime.Now;
             this.DataCadastro = System.DateTime.Now;
             this.Situacao = Situacao; //Ativo,Inativo
         }
         public override string ToString()
         {
-            return "\nDADOS COMPANHIA AÉREA: \nRazão Social: " + RazaoSocial + "\nCNPJ: " + Cnpj + "\nData Abertura: " + DataAbertura.ToString("dd/MM/yyyy") + "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nÚltimo Voo: " + UltimoVoo.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + Situacao;
+            return "\nDADOS COMPANHIA AÉREA: \nRazão Social: " + RazaoSocial + "\nCNPJ: " + Cnpj + "\nData Abertura: " + DataAbertura.ToString("dd/MM/yyyy") + "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nÚltimo Voo: " + DataUltimoVoo.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + Situacao;
         }
       /*  public string ObterDados() //ARQUIVO TEXTO
         {
