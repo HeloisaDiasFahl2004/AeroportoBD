@@ -9,22 +9,21 @@ namespace AeroportoBD
     internal class VendaPassagem
     {
         public string IDItemVenda { get; set; }
-        public string IDPassagem { get; set; }
+        public string IDVenda { get; set; }
         public float ValorUnitario { get; set; }
         public string Cpf { get; set; }
-        public string Nome { get; set; }
+       
 
-        public VendaPassagem(string idItemVenda, string idPassagem, float valorUnitario, string cpf, string nome)
+        public VendaPassagem(string idItemVenda, string idVenda, float valorUnitario)
         {
             this.IDItemVenda = idItemVenda;
-            this.IDPassagem = idPassagem;
+            this.IDVenda = idVenda;
             this.ValorUnitario = valorUnitario;
-            this.Cpf = cpf;
-            this.Nome = nome;
+            
         }
         public override string ToString()
         {
-            return "\nDADOS ITEM VENDA: \nID Item Venda: " + IDItemVenda + "\nID Passagem: " + IDPassagem + "\nID Cliente: " + Nome + "\nCPF: " + Cpf;
+            return "\nDADOS ITEM VENDA: \nID Item Venda: " + IDItemVenda + "\nID Passagem: " + IDVenda ;
         }
       /*  public string ObterDados()
         {

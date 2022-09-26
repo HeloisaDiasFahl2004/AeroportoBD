@@ -10,12 +10,14 @@ namespace AeroportoBD
         #region Declarações
         static BD bd = new BD();
 
+        static CompanhiaAerea c = new CompanhiaAerea();//Pra poder chamar seus métodos
+
         static List<Passageiro> listPassageiro = new List<Passageiro>();
         static List<CompanhiaAerea> listCompanhia = new List<CompanhiaAerea>();
         static List<Aeronave> listAeronaves = new List<Aeronave>();
         static List<string> voosrealizados = new List<string>();
         static List<Voo> listVoo = new List<Voo>();
-        static List<PassagemVoo> listPassagem = new List<PassagemVoo>();
+        static List<Passagem> listPassagem = new List<Passagem>();
         static List<Venda> listVenda = new List<Venda>();
         static List<VendaPassagem> listItemVenda = new List<VendaPassagem>();
         static List<string> listRestritos = new List<string>();// classe pra cadastrar
@@ -1487,6 +1489,56 @@ namespace AeroportoBD
                     return null;
                 #endregion
 
+                case "aeronaveeditar":
+
+                    #region AeronaveEditar
+                    encontrado = false;
+                    do
+                    {
+                        retornar = false;
+                        Aeronave a = null;
+
+                        Console.Write("Informe o código Nacional de identificação da Aeronave: ");
+                        try
+                        {
+                            idaeronave = Console.ReadLine().ToUpper();
+
+                            foreach (var aeronave in listAeronaves)
+                            {
+                                if (aeronave.Inscricao == idaeronave)
+                                {
+                                    a = aeronave;
+                                    encontrado = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    encontrado = false;
+                                }
+                            }
+                            if (encontrado == true)
+                            {
+                                return idaeronave;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Código não encontrado! Insira um código válido!");
+                                retornar = PausaMensagem();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("ERRO: Insira um código válido!");
+                            retornar = PausaMensagem();
+                        }
+                    } while (retornar == false);
+
+                    //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
+                    return null;
+
+
+                #endregion
+
                 case "valorpassagem":
 
                     #region ValorPassagem
@@ -1610,7 +1662,7 @@ namespace AeroportoBD
 
                 #endregion
 
-                case "cpfexiste":
+                case "cpfexiste": // buscar na lista de cpf
 
                     #region CpfExiste
 
@@ -1657,7 +1709,7 @@ namespace AeroportoBD
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
 
-                #endregion
+                #endregion 
 
                 case "idvoo":
 
@@ -1806,6 +1858,7 @@ namespace AeroportoBD
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
                 #endregion
+
                 default:
                     return null;
 
@@ -1940,6 +1993,85 @@ namespace AeroportoBD
             } while (opc != 0);
         }
         #endregion
+
+        #region MENU COMPANHIA AÉREA
+        static void TelaInicialCompanhiasAereas()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Companhia Aérea já cadastrada\n");
+                Console.WriteLine(" 2 - Cadastrar uma Nova Companhia Aérea\n");
+                Console.WriteLine("\n 0 - SAIR\n");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+                        TelaInicial();
+                        break;
+
+                    case 1:
+                        TelaLoginCompanhiaAerea();
+                        break;
+
+                    case 2:
+                        TelaCadastrarCompanhiaAerea();
+                        break;
+                }
+
+            } while (opc != 0);
+        }
+        #endregion
+      static void TelaLoginCompanhiaAerea()
+        {
+            string cnpj;
+            CompanhiaAerea compAtivo;
+            Console.Clear();
+            Console.WriteLine("\nInforme o 'CNPJ' para Entrar\n");
+            Pausa();
+            cnpj = ValidarEntrada("cnpjexiste");
+            if (cnpj == null) TelaInicialCompanhiasAereas();
+
+            foreach (CompanhiaAerea companhia in listCompanhia)
+            {
+                if (companhia.Cnpj == cnpj)
+                {
+                    compAtivo = companhia;
+                    TelaOpcoesCompanhiaAerea(compAtivo);
+                }
+            }
+
+        }
+
+        static void TelaCadastrarCompanhiaAerea()
+        {
+            string nomeComp;
+            string cnpj;
+            string dataAbertura;
+
+            nomeComp = ValidarEntrada("nome");
+            if (nomeComp == null) TelaInicialCompanhiasAereas();
+
+            cnpj = ValidarEntrada("cnpj");
+            if (cnpj == null) TelaInicialCompanhiasAereas();
+
+            dataAbertura = ValidarEntrada("dataabertura");
+            if (dataAbertura == null) TelaInicialCompanhiasAereas();
+
+            CompanhiaAerea novaComp = new CompanhiaAerea(cnpj, nomeComp, DateConverter(dataAbertura), System.DateTime.Now, System.DateTime.Now, 'A');
+            listCompanhia.Add(novaComp);
+            //GravarCompanhiaAerea();
+            bd.InsertCompanhiaAerea(novaComp);
+            TelaInicialCompanhiasAereas();
+
+
+        }
+
+
         static void Main(string[] args)
         {
             TelaInicial();

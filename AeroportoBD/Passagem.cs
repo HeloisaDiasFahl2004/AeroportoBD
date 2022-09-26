@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace AeroportoBD
 {
-    internal class PassagemVoo
+    internal class Passagem
     {
         public string IDPassagem { get; set; }
-        public string IDVoo { get; set; }
+        public string IDVoo { get; set; } //posso ter o mesmo id de passagem com id do voo diferente
         public DateTime DataUltimaOperacao { get; set; }
-        public float Valor { get; set; }
+        public float ValorUnitario { get; set; }
         public char Situacao { get; set; }
-        public PassagemVoo(string idPassagem, string idVoo, DateTime dataUltimaOperacao, float valor, char Situacao)
+        public Passagem(string idPassagem, string idVoo, DateTime dataUltimaOperacao, float valorUni, char Situacao)
         {
             this.IDPassagem = idPassagem;
             this.IDVoo = idVoo;
             this.DataUltimaOperacao = dataUltimaOperacao;
-            this.Valor = valor;
+            this.ValorUnitario = valorUni;
             this.Situacao = Situacao;
         }
         public override string ToString()
         {
-            return "\nDADOS PASSAGEM: \nID Passagem: " + IDPassagem + "\nID VOO: " + IDVoo + "\nData Última Operação: " + DataUltimaOperacao.ToString("dd/MM/yyyy HH:mm") + "\nValor: " + Valor + "\nSituação: " + Situacao;
+            return "\nDADOS PASSAGEM: \nID Passagem: " + IDPassagem + "\nID VOO: " + IDVoo + "\nData Última Operação: " + DataUltimaOperacao.ToString("dd/MM/yyyy HH:mm") + "\nValor: " + ValorUnitario + "\nSituação: " + Situacao;
         }
         /*  public string ObterDados()
           {

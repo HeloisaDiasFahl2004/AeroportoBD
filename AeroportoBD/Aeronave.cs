@@ -10,23 +10,21 @@ namespace AeroportoBD
     {
         public string Inscricao { get; set; }
         public int Capacidade { get; set; }
-        public int AssentosOcupados { get; set; }
         public DateTime UltimaVenda { get; set; }
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
         public string Cnpj { get; set; }
-        public string RazaoSocial { get; set; }
+      
 
-        public Aeronave(string inscricao, int capacidade, int assentosOcupados, DateTime UltimaVenda, DateTime Cadastro, char situacao, string cnpj, string razaoSocial)
+        public Aeronave(string inscricao, int capacidade,  DateTime UltimaVenda, DateTime Cadastro, char situacao, string cnpj)
         {
             this.Inscricao = inscricao;
             this.Capacidade = capacidade;
-            this.AssentosOcupados = assentosOcupados;
             this.UltimaVenda = System.DateTime.Now;
             this.DataCadastro = System.DateTime.Now;
             this.Situacao = situacao;
             this.Cnpj = cnpj;
-            this.RazaoSocial = razaoSocial;
+          
         }
         public override string ToString()
         {
@@ -34,7 +32,7 @@ namespace AeroportoBD
             if (Situacao == 'A') s = "ATIVA";
             else s = "INATIVA";
 
-            return "\nDADOS AERONAVE: \nInscrição: " + Inscricao + "\nCapacidade: " + Capacidade + "\nAssentos Ocupados: " + AssentosOcupados + "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nÚltima Venda: " + UltimaVenda.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + s + "\nEmpresa Aérea: " + RazaoSocial + "\nCNPJ: " + Cnpj;
+            return "\nDADOS AERONAVE: \nInscrição: " + Inscricao + "\nCapacidade: " + Capacidade +  "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nÚltima Venda: " + UltimaVenda.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + s + "\nCNPJ: " + Cnpj;
         }
         /*  public string ObterDados()
           {
