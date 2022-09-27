@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading;
 
@@ -2026,24 +2027,33 @@ namespace AeroportoBD
                         Thread.Sleep(200);
                         Environment.Exit(0);
                         break;
+
                     case 1:
                         TelaInicialCompanhiasAereas();
                         break;
+
                     case 2:
-                        //TelaInicialPassageiros();
+                        TelaInicialPassageiros();
                         break;
+
                     case 3:
-                       // TelaVendas();
+
+                     //   TelaVendas();
+
                         break;
+
                     case 4:
-                      //  TelaInicialCpfRestritos();
+                     //   TelaInicialCpfRestritos();
                         break;
+
                     case 5:
-                     //   TelaInicialCnpjBloqueados();
+                    //    TelaInicialCnpjRestritos();
                         break;
+
                     case 6:
-                    //    TelaVerAeronavesCadastradas();
+                        TelaVerAeronavesCadastradas();
                         break;
+
                     case 7:
                         foreach (var voorealizado in voosrealizados)
                         {
@@ -2051,6 +2061,7 @@ namespace AeroportoBD
                         }
                         Pausa();
                         break;
+
                     case 8:
                         foreach (var Voo in listVoo)
                         {
@@ -2064,6 +2075,7 @@ namespace AeroportoBD
                 }
 
             } while (opc != 0);
+
         }
         #endregion
 
@@ -2100,7 +2112,364 @@ namespace AeroportoBD
         }
         #endregion
 
-        #region Companhia Aérea funções
+        #region MENIU PASSAGEIRO
+        static void TelaInicialPassageiros()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Passageiro já cadastrado\n");
+                Console.WriteLine(" 2 - Cadastrar um novo Passageiro\n");
+                Console.WriteLine("\n 0 - SAIR\n");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+                        TelaInicial();
+                        break;
+
+                    case 1:
+                        TelaLoginPassageiro();
+                        break;
+
+                    case 2:
+                        TelaCadastrarPassageiro();
+                        break;
+                }
+
+            } while (opc != 0);
+        }
+        #endregion
+
+        #region Opções Aeronave
+        static void TelaCadastrarAeronave(CompanhiaAerea compAtivo)
+        {
+            string idAeronave;
+            int capacidade;
+
+            char situacao;
+            Aeronave novaAeronave;
+
+            idAeronave = ValidarEntrada("idaeronave");
+            if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            capacidade = int.Parse(ValidarEntrada("capacidade"));
+            if (capacidade.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            situacao = char.Parse(ValidarEntrada("situacao"));
+            if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, compAtivo.Cnpj);
+            listAeronaves.Add(novaAeronave);
+            //   GravarAeronaves();
+            bd.InsertAeronave(novaAeronave);
+            Console.WriteLine("\nCadastro Realizado com Sucesso!");
+            Pausa();
+            TelaOpcoesCompanhiaAerea(compAtivo);
+        }
+
+        static void TelaVerAeronavesCadastradas()
+        {
+            Console.Clear();
+
+            foreach (var aeronave in listAeronaves)
+            {
+                Console.WriteLine(aeronave.ToString() + "\n");
+            }
+            Pausa();
+            TelaInicial();
+        }
+
+        static void TelaEditarAeronave(CompanhiaAerea compAtivo)
+        {
+            string idaeronave = ValidarEntrada("aeronaveeditar");
+            if (idaeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            string situacao = ValidarEntrada("situacao");
+            if (situacao == null) TelaOpcoesCompanhiaAerea(compAtivo);
+            char s = char.Parse(situacao);
+
+            foreach (var aeronave in listAeronaves)
+            {
+                if (aeronave.Inscricao == idaeronave)
+                {
+                    aeronave.Situacao = s;
+                }
+            }
+            Console.Clear();
+            Console.WriteLine("Situação alterada com sucesso!");
+            Pausa();
+            TelaOpcoesCompanhiaAerea(compAtivo);
+        }
+        #endregion
+
+        #region Opções Voo
+        static void TelaCadastrarVoo(CompanhiaAerea compAtivo)
+        {
+            Console.Clear();
+            string idVoo;
+            string destino;
+            string idAeronave;
+            string auxData;
+            DateTime dataVoo;
+            float valor;
+
+            if (compAtivo.Situacao == 'A')
+            {
+                destino = ValidarEntrada("destino");
+                if (destino == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+                idAeronave = ValidarEntrada("aeronave");
+                if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+                auxData = ValidarEntrada("datavoo");
+                if (auxData == null) TelaOpcoesCompanhiaAerea(compAtivo);
+                dataVoo = DateHourConverter(auxData);
+
+                valor = float.Parse(ValidarEntrada("valorpassagem"));
+                if (valor.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
+
+                idVoo = GeradorId("idvoo");
+                if (idVoo == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+                Voo novoVoo = new Voo(idVoo, destino, dataVoo, System.DateTime.Now, 0,'A');
+                listVoo.Add(novoVoo);
+               // GravarVoo();
+                Aeronave a = null;
+                foreach (var aeronave in listAeronaves)
+                {
+                    if (aeronave.Inscricao == idAeronave)
+                    {
+                        a = aeronave;
+                        break;
+                    }
+                }
+                //Gerador de passagens
+                List<string> idsPassagem = GeradorIdPassagens(a.Capacidade);
+                for (int i = 0; i < a.Capacidade; i++)
+                {
+                    Passagem passagem = new Passagem(idsPassagem[i], idVoo, System.DateTime.Now, valor, 'L');
+                    listPassagem.Add(passagem);
+                    //GravarPassagem();
+                }
+                Console.WriteLine("\nCadastro Realizado com Sucesso!");
+                Pausa();
+                TelaOpcoesCompanhiaAerea(compAtivo);
+            }
+            else
+            {
+                Console.WriteLine("\nCompanhia INATIVA no sistema, não pode cadastrar voo!");
+                Pausa();
+                TelaOpcoesCompanhiaAerea(compAtivo);
+            }
+        }
+        static void TelaVoosDisponiveis(Passageiro passageiroAtivo)
+        {
+            int opc;
+            foreach (var Voo in listVoo)
+            {
+                if (Voo.Situacao == 'A')
+                {
+                    Console.WriteLine("IDVoo: " + Voo.IDVoo + " Destino: " + Voo.Destino + " Data e Hora do Voo: " + Voo.DataVoo.ToString("dd/MM/yyyy HH:mm"));
+                }
+            }
+            Console.WriteLine("\n----------------------------------------------------------------------------------------------");
+            Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
+            Console.WriteLine("0 - Voltar");
+            opc = int.Parse(ValidarEntrada("menu"));
+            Console.Clear();
+
+            switch (opc)
+            {
+                case 0:
+                  //  TelaVendas();
+                    break;
+                case 1:
+                    Console.Clear();
+                    string idvoo = ValidarEntrada("idvoo");
+                    if (idvoo == null) TelaVoosDisponiveis(passageiroAtivo);
+                    TelaDescricaoVoo(idvoo, passageiroAtivo);
+                    break;
+            }
+        }
+        static void TelaDescricaoVoo(string idvoo, Passageiro passageiroAtivo)
+        {
+
+            int opc;
+            Voo vooatual = null;
+            foreach (var voo in listVoo)
+            {
+                if (voo.IDVoo == idvoo)
+                {
+                    vooatual = voo;
+                    break;
+                }
+                else
+                {
+                    vooatual = null;
+                }
+            }
+            Console.WriteLine(vooatual.ToString());
+            Console.WriteLine("\n----------------------------------------------------------------------------------------------");
+            Console.WriteLine("1 - Comprar: ");
+            Console.WriteLine("2 - Reservar: ");
+            Console.WriteLine("0 - Voltar: ");
+            opc = int.Parse(ValidarEntrada("menu"));
+            Console.Clear();
+
+            switch (opc)
+            {
+                case 0:
+                    TelaVoosDisponiveis(passageiroAtivo);
+                    break;
+                case 1:
+                    int cont = 0;
+                    bool retornar = false;
+                    int quantPassagem;
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\nInforme a quantidade de passagens (máximo 4): \n1  2  3  4");
+                        quantPassagem = int.Parse(ValidarEntrada("menu"));
+                        if (quantPassagem > 0 && quantPassagem <= 4)
+                        {
+                            foreach (var passagem in listPassagem)
+                            {
+                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                {
+                                    cont++;
+                                }
+                            }
+                            if (cont >= quantPassagem)
+                            {
+                                cont = 0;
+                                Passagem p = null;
+                                foreach (var passagem in listPassagem)
+                                {
+                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                    {
+                                        p = passagem;
+                                        passagem.Situacao = 'P';
+                                        passagem.DataUltimaOperacao = System.DateTime.Now;
+                                     //   GravarPassagem();
+                                        VendaPassagem item = new VendaPassagem(GeradorId("iditemvenda"), item.IDVenda, passagem.ValorUnitario, passageiroAtivo.Cpf);
+                                        listItemVenda.Add(item);
+                                      //  GravarItemVenda();
+                                        cont++;
+                                    }
+
+                                    if (cont == quantPassagem)
+                                    {
+                                        retornar = true;
+                                        Venda venda = new Venda(GeradorId("idvenda"), System.DateTime.Now, (p.ValorUnitario * quantPassagem), passageiroAtivo.Cpf);
+                                        listVenda.Add(venda);
+                                   //     GravarVenda();
+                                        passageiroAtivo.DataUltimaCompra = System.DateTime.Now;
+                                       // GravarPassageiro();
+
+                                        string idAeronave = null;
+                                        foreach (var voo in listVoo)
+                                        {
+                                            if (idvoo == voo.IDVoo)
+                                            {
+                                                idAeronave = voo.IDVoo;
+                                                break;
+                                            }
+                                        }
+                                        foreach (var aeronave in listAeronaves)
+                                        {
+                                            if (aeronave.Inscricao == idAeronave)
+                                            {
+                                                aeronave.AssentosOcupados = aeronave.AssentosOcupados + quantPassagem;
+                                                aeronave.UltimaVenda = System.DateTime.Now;
+                                            }
+                                        }
+                                        //GravarAeronaves();
+
+                                        Console.WriteLine("Compra realizada com sucesso!");
+                                        Pausa();
+                                     //   TelaVendas();
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
+                                retornar = PausaMensagem();
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Só é possível comprar [4] passagens por venda");
+                            retornar = PausaMensagem();
+                        }
+                    } while (retornar == true);
+                 //   TelaHistoricoVendas();
+                    break;
+                case 2:
+
+                    cont = 0;
+                    retornar = false;
+                    do
+                    {
+                        Console.WriteLine("\nInforme a quantidade de passagens para reserva (máximo 4): \n1  2  3  4");
+                        quantPassagem = int.Parse(ValidarEntrada("menu"));
+                        if (quantPassagem > 0 && quantPassagem <= 4)
+                        {
+                            foreach (var passagem in listPassagem)
+                            {
+                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                {
+                                    cont++;
+                                }
+                            }
+                            if (cont >= quantPassagem)
+                            {
+                                cont = 0;
+                                Passagem p = null;
+                                foreach (var passagem in listPassagem)
+                                {
+                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                    {
+                                        p = passagem;
+                                        passagem.Situacao = 'R';
+                                        passagem.DataUltimaOperacao = System.DateTime.Now;
+                                      //  GravarPassagem();
+                                        cont++;
+                                    }
+                                    if (cont == quantPassagem) break;
+                                }
+                                Console.Clear();
+                                Console.WriteLine("Reserva realizada com sucesso!");
+                                Pausa();
+                            //    TelaVendas();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
+                                retornar = PausaMensagem();
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Só é possível reservar [4] passagens por venda");
+                            retornar = PausaMensagem();
+                        }
+                    } while (retornar == true);
+                  //  TelaHistoricoReservadas();
+                    break;
+            }
+        }
+
+        #endregion  
+
+        // Login/Cadastrar/Editar
+        #region Companhia Aérea Opções
         static void TelaLoginCompanhiaAerea()
         {
             string cnpj;
@@ -2116,12 +2485,11 @@ namespace AeroportoBD
                 if (companhia.Cnpj == cnpj)
                 {
                     compAtivo = companhia;
-                    //TelaOpcoesCompanhiaAerea(compAtivo);
+                    TelaOpcoesCompanhiaAerea(compAtivo);
                 }
             }
 
         }
-
         static void TelaCadastrarCompanhiaAerea()
         {
             string nomeComp;
@@ -2145,8 +2513,333 @@ namespace AeroportoBD
 
 
         }
+        static void TelaOpcoesCompanhiaAerea(CompanhiaAerea compAtivo)
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nCompanhia Aérea " + compAtivo.RazaoSocial);
+                Console.WriteLine("\nPor Favor, informe a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Cadastrar uma nova Aeronave\n"); //insert aeronave
+                Console.WriteLine(" 2 - Programar um novo Voo\n"); //insert voo
+                Console.WriteLine(" 3 - Cancelar um voo\n"); // update voo situacao=C
+                Console.WriteLine(" 4 - Ativar/Inativar Aeronave\n"); // update aeronave situacao = A/I
+                Console.WriteLine(" 5 - Editar dados da Companhia Aerea\n"); // update Companhia Aerea
+
+                Console.WriteLine("\n 0 - Encerrar Sessão\n");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+
+                        TelaInicial();
+
+                        break;
+
+                    case 1:
+
+                     TelaCadastrarAeronave(compAtivo);
+
+                        break;
+
+                    case 2:
+
+                     TelaCadastrarVoo(compAtivo);
+
+                        break;
+
+
+                    case 3:
+                        foreach (var Voo in listVoo)
+                        {
+                            if (Voo.Situacao == 'A')
+                            {
+                                Console.WriteLine("IDVoo: " + Voo.IDVoo + " Destino: " + Voo.Destino + " Data e Hora do Voo: " + Voo.DataVoo.ToString("dd/MM/yyyy HH:mm"));
+                            }
+                        }
+                        Console.WriteLine("\n----------------------------------------------------------------------------------------------");
+                        Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
+                        Console.WriteLine("0 - Voltar");
+                        opc = int.Parse(ValidarEntrada("menu"));
+                        Console.Clear();
+
+                        switch (opc)
+                        {
+                            case 0:
+                                TelaOpcoesCompanhiaAerea(compAtivo);
+                                break;
+                            case 1:
+                                Console.Clear();
+                                string idvoo = ValidarEntrada("idvoo");
+                                if (idvoo == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+                                foreach (var voo in listVoo)
+                                {
+                                    if (voo.IDVoo == idvoo)
+                                    {
+                                        voo.Situacao = 'C';
+                                        Console.WriteLine("Voo CANCELADO!! Um novo Voo deve ser cadastrado.");
+                                        Pausa();
+                                        TelaOpcoesCompanhiaAerea(compAtivo);
+                                    }
+
+                                }
+
+                                break;
+                        }
+
+                        break;
+
+
+                    case 4:
+
+                     TelaEditarAeronave(compAtivo);
+
+
+                        break;
+
+                    case 5:
+
+                        TelaEditarCompanhiaAerea(compAtivo);
+
+                        break;
+                }
+
+
+            } while (true);
+        }
+        static void TelaEditarCompanhiaAerea(CompanhiaAerea companhiaAerea)
+        {
+            DateTime datanova;
+            int opc;
+            char novaSituacao;
+            string novadata;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nEDTAR DADOS");
+                Console.WriteLine("\nEscolha qual Dado deseja Editar: ");
+                Console.Write("\n 1 - Data de Abertura\n");
+                Console.Write("\n 2 - Situação (Ativo / Inativo)\n\n");
+                Console.Write("\n 0 - Voltar");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+                        TelaOpcoesCompanhiaAerea(companhiaAerea);
+                        break;
+
+                    case 1:
+                        Console.WriteLine("\nData de abertura Atual: " + companhiaAerea.DataAbertura.ToString("dd/MM/yyyy"));
+                        Console.Write("\n\nInforme a nova data");
+                        Pausa();
+                        novadata = ValidarEntrada("dataabertura");
+                        if (novadata == null) TelaEditarCompanhiaAerea(companhiaAerea);
+                        datanova = DateConverter(novadata);
+
+                        companhiaAerea.DataAbertura = datanova;
+                        //  GravarCompanhiaAerea();
+                     //   bd.UpdateCompanhiaDataAbertura(novadata);
+                        Console.Clear();
+                        Console.WriteLine("\nData de abertura alterada com Sucesso!");
+                        Pausa();
+                        TelaEditarCompanhiaAerea(companhiaAerea);
+                        break;
+
+                    case 2:
+                        Console.WriteLine("\nCompanhia Aérea: " + companhiaAerea.RazaoSocial);
+                        if (companhiaAerea.Situacao == 'A')
+                        { Console.WriteLine("\nSituação Atual: ATIVA"); }
+
+                        if (companhiaAerea.Situacao == 'I')
+                        { Console.WriteLine("\nSituação Atual: INATIVA"); }
+
+                        Pausa();
+
+                        novaSituacao = char.Parse(ValidarEntrada("situacao"));
+                        if (novaSituacao.Equals(null)) TelaEditarCompanhiaAerea(companhiaAerea);
+
+                        companhiaAerea.Situacao = novaSituacao;
+                        // GravarCompanhiaAerea();
+                       // bd.UpdateComp(editadaComp);
+                        Console.Clear();
+                        Console.WriteLine("\nSituação de Cadastro Alterada com Sucesso!");
+                        Pausa();
+                        TelaEditarCompanhiaAerea(companhiaAerea);
+                        break;
+
+                }
+
+            } while (true);
+        }
+        #endregion
+
+        //Login/Cadastrar/Editar
+        #region Passageiro Opções
+        static void TelaLoginPassageiro()
+        {
+            string cpf;
+            Passageiro passageiroAtivo;
+            Console.Clear();
+            cpf = ValidarEntrada("cpfexiste");
+            if (cpf == null) TelaInicialPassageiros();
+            foreach (Passageiro passageiro in listPassageiro)
+            {
+                if (passageiro.Cpf == cpf)
+                {
+                    passageiroAtivo = passageiro;
+                   // TelaEditarPassageiro(passageiroAtivo);
+                }
+            }
+        }
+        static void TelaCadastrarPassageiro()
+        {
+            do
+            {
+                string nome, cpf;
+                string dataNascimento;
+                char sexo;
+
+                nome = ValidarEntrada("nome");
+                if (nome == null) TelaInicialPassageiros();
+
+                cpf = ValidarEntrada("cpf");
+                if (cpf == null) TelaInicialPassageiros();
+
+                dataNascimento = ValidarEntrada("datanascimento");
+                if (dataNascimento == null) TelaInicialPassageiros();
+
+                sexo = char.Parse(ValidarEntrada("sexo"));
+                if (sexo.Equals(null)) TelaInicialPassageiros();
+
+
+                Passageiro novoPassageiro = new Passageiro(cpf, nome, DateConverter(dataNascimento), sexo, System.DateTime.Now, System.DateTime.Now, 'A');
+                listPassageiro.Add(novoPassageiro);
+                //  GravarPassageiro();
+                bd.InsertPassageiro(novoPassageiro);
+                Console.WriteLine("\nPassageiro Cadastrado com Sucesso!");
+                Pausa();
+                TelaInicialPassageiros();
+
+            } while (true);
+        }
+        static void TelaEditarPassageiro(Passageiro passageiroAtivo)
+        {
+            int opc;
+            string novoNome;
+            string novaDataNascimento;
+            DateTime data;
+            char novoSexo;
+            char novaSituacao;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nEDTAR DADOS");
+                Console.WriteLine("\nEscolha qual Dado deseja Editar: ");
+                Console.Write("\n 1 - Nome");
+                Console.Write("\n 2 - Data de Nascimento");
+                Console.Write("\n 3 - Sexo");
+                Console.Write("\n 4 - Situação (Ativo / Inativo)");
+                Console.Write("\n\n 0 - Sair");
+                opc = int.Parse(ValidarEntrada("menu"));
+
+                switch (opc)
+                {
+                    case 0:
+                        TelaInicial();
+                        break;
+
+                    case 1:
+
+                        Console.Clear();
+                        Console.WriteLine("\nNome Atual: " + passageiroAtivo.Nome);
+                        Console.Write("\n\nInforme o Novo Nome");
+                        Pausa();
+                        novoNome = ValidarEntrada("nome");
+                        if (novoNome == null) TelaEditarPassageiro(passageiroAtivo);
+
+                        passageiroAtivo.Nome = novoNome;
+                    //    GravarPassageiro();
+                        Console.Clear();
+                        Console.WriteLine("\nNome Alterado com Sucesso!");
+                        Pausa();
+                        TelaEditarPassageiro(passageiroAtivo);
+
+                        break;
+
+                    case 2:
+
+                        Console.Clear();
+                        Console.WriteLine("\nData de nascimento Atual: " + passageiroAtivo.DataNascimento.ToShortDateString());
+                        Console.Write("\n\nInforme a Nova Data de Nascimento");
+                        Pausa();
+                        novaDataNascimento = ValidarEntrada("datanascimento");
+                        if (novaDataNascimento == null) TelaEditarPassageiro(passageiroAtivo);
+
+                        data = DateConverter(novaDataNascimento);
+                        passageiroAtivo.DataNascimento = data;
+                     //   GravarPassageiro();
+                        Console.Clear();
+                        Console.WriteLine("\nData de Nascimento Alterada com Sucesso!");
+                        Pausa();
+                        TelaEditarPassageiro(passageiroAtivo);
+
+                        break;
+
+                    case 3:
+                        Console.Clear();
+                        Console.WriteLine("\nSexo Atual: " + passageiroAtivo.Sexo);
+                        Console.Write("\n\nInforme o Novo Sexo");
+                        Pausa();
+                        novoSexo = char.Parse(ValidarEntrada("sexo"));
+                        if (novoSexo.Equals(null)) TelaInicialPassageiros();
+
+                        passageiroAtivo.Sexo = novoSexo;
+                   //     GravarPassageiro();
+                        Console.Clear();
+                        Console.WriteLine("\nSexo Alterado com Sucesso!");
+                        Pausa();
+                        TelaEditarPassageiro(passageiroAtivo);
+                        break;
+
+
+                    case 4:
+
+                        Console.Clear();
+                        Console.WriteLine("\nPASSAGEIRO: " + passageiroAtivo.Nome);
+                        if (passageiroAtivo.Situacao == 'A')
+                        { Console.WriteLine("\nSituação Atual: ATIVO"); }
+
+                        if (passageiroAtivo.Situacao == 'I')
+                        { Console.WriteLine("\nSituação Atual: INATIVO"); }
+
+                        Pausa();
+
+                        novaSituacao = char.Parse(ValidarEntrada("situacao"));
+                        if (novaSituacao.Equals(null)) TelaInicialPassageiros();
+
+                        passageiroAtivo.Situacao = novaSituacao;
+                      //  GravarPassageiro();
+                        Console.Clear();
+                        Console.WriteLine("\nSituação de Cadastro Alterada com Sucesso!");
+                        Pausa();
+                        TelaEditarPassageiro(passageiroAtivo);
+                        break;
+                }
+
+            } while (true);
+        } 
 
         #endregion
+
+
         static void Main(string[] args)
         {
             TelaInicial();
@@ -2154,6 +2847,3 @@ namespace AeroportoBD
 
     }
 }
-
-
-
