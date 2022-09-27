@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace AeroportoBD
     internal class BD
     {
         string Conexao = "Data Source = 'localhost\\SQLSERVER'; Initial Catalog = OnTheFly;User Id = sa; Password= sqlservermeu;";
-
+        SqlConnection conn;
         public BD()
         {
 
@@ -20,83 +21,194 @@ namespace AeroportoBD
             return Conexao;
         }
 
-        #region Companhia Aerea
-        public void InsertCompanhiaAerea(CompanhiaAerea novaComp)
+
+        #region Insert Update Dados
+        public void InsertDado(SqlConnection conexaosql, String insert)
         {
             try
             {
-                BD bd = new BD();
-                SqlConnection conexaosql = new SqlConnection(bd.Caminho());
                 conexaosql.Open();
-                string insertComp = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao) VALUES ('{novaComp.Cnpj}'," + $"'{novaComp.RazaoSocial}','{novaComp.DataAbertura}','{novaComp.DataUltimoVoo}','{novaComp.DataCadastro}','{novaComp.Situacao}');";
-                SqlCommand cmdINSERTcomp = new SqlCommand(insertComp, conexaosql);
-                cmdINSERTcomp.ExecuteNonQuery();
+                SqlCommand cmdINSERT = new SqlCommand(insert, conn);
+                cmdINSERT.Connection = conexaosql;
+                cmdINSERT.ExecuteNonQuery();
                 conexaosql.Close();
-              //  Console.WriteLine("Companhia inserida com sucesso!");
-              //  Console.ReadKey();
             }
             catch (SqlException e)
             {
                 if (e.Number != 2627) // chave duplicada
                     throw;
 
-                Console.WriteLine("CNPJ já existente");
+                Console.WriteLine("CPF/CNPJ já existente");
                 Console.ReadKey();
             }
-        }
-      
-        public void UpdateCompanhiaAerea(CompanhiaAerea editComp) 
+        } //OK
+
+        public void UpdateDado(SqlConnection conexaosql, String update)
         {
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdUPDATE = new SqlCommand(update, conexaosql);
+                cmdUPDATE.Connection = conexaosql;
+                cmdUPDATE.ExecuteNonQuery();
+                conexaosql.Close();
+            }
+            catch (SqlException e)
+            {
+                Console.WriteLine("Não foi possível atualizar dado!");
+            }
+            Console.ReadKey();
+        } //OK
+#endregion
+
+
+        #region Companhia Aerea
+
+        public String SelectCompanhiaAerea(SqlConnection conexaosql, String selectC) 
+        {
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectC, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.Write(" {0} ", reader.GetString(1));
+                        Console.Write(" {0} ", reader.GetString(2));
+                        Console.Write(" {0} ", reader.GetString(3));
+                        Console.Write(" {0} ", reader.GetString(4));
+                        Console.Write(" {0} ", reader.GetString(5));
+
+
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+            }
+            catch (SqlException e)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            return s;
         }
 
-        public void SelectCompanhiaAerea(CompanhiaAerea verComps) 
+        public string SelectUmDadoCompanhia(SqlConnection conexaosql, String selectC) 
         {
-        }
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectC, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.Write(" {0} ", reader.GetString(1));
+                        Console.Write(" {0} ", reader.GetString(2));
+                        Console.Write(" {0} ", reader.GetString(3));
+                        Console.Write(" {0} ", reader.GetString(4));
+                        Console.Write(" {0} ", reader.GetString(5));
+                       
 
-        public void SelectUMACompanhiaAerea(CompanhiaAerea verComp) 
-        {
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+            }
+            catch (SqlException e)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            return s;
         }
 
         #endregion
+
 
         #region Passageiro
-        public void InsertPassageiro(Passageiro novoPassageiro)
+        public String SelectUmDadoPassageiro(SqlConnection conexaosql, String selectP)
         {
+            String s = "";
             try
             {
-                BD bd = new BD();
-                SqlConnection conexaosql = new SqlConnection(bd.Caminho());
                 conexaosql.Open();
-                string insertPassageiro = $"INSERT INTO Passageiro(CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao) VALUES('{novoPassageiro.Cpf}'," + $"'{novoPassageiro.Nome}','{novoPassageiro.DataNascimento}','{novoPassageiro.Sexo}','{novoPassageiro.DataUltimaCompra}','{novoPassageiro.DataCadastro}','{novoPassageiro.Situacao}');";
-                SqlCommand cmdINSERTpassageiro = new SqlCommand(insertPassageiro, conexaosql);
-                cmdINSERTpassageiro.ExecuteNonQuery();
+                SqlCommand cmdSELECT = new SqlCommand(selectP, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.Write(" {0} ", reader.GetString(1));
+                        Console.Write(" {0} ", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write(" {0} ", reader.GetString(3));
+                        Console.Write(" {0} ", reader.GetDateTime(4).ToShortDateString());
+                        Console.Write(" {0} ", reader.GetDateTime(5).ToShortDateString());
+                        Console.WriteLine(" {0} ", reader.GetString(6));
+
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+                }
                 conexaosql.Close();
-               // Console.WriteLine("Passageiro inserido com sucesso!");
-               // Console.ReadKey();
+                Console.ReadKey();
             }
             catch (SqlException e)
             {
-                if (e.Number != 2627) // chave duplicada
-                    throw;
+                Console.Write("Não foi possível imprimir");
+            }
+            return s;
+        } //OK
 
-                Console.WriteLine("CPF já existente");
+        public String SelectPassageiro(SqlConnection conexaosql, String selectP)
+        {
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectP, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.Write(" {0} ", reader.GetString(1));
+                        Console.Write(" {0} ", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write(" {0} ", reader.GetString(3));
+                        Console.Write(" {0} ", reader.GetDateTime(4).ToShortDateString());
+                        Console.Write(" {0} ", reader.GetDateTime(5).ToShortDateString());
+                        Console.WriteLine(" {0} ", reader.GetString(6));
+
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+                }
+                conexaosql.Close();
                 Console.ReadKey();
             }
-        }
-
-        public void UpdatePassageiro(Passageiro editPassageiro)
-        {
-        }
-
-        public void SelectPassageiro(Passageiro verPassageiros)
-        {
-        }
-
-        public void SelectUMPassageiro(Passageiro verPassageiro)
-        {
-        }
-
+            catch (SqlException e)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            return s;
+        } // OK
         #endregion
+
 
         #region Aeronave
         public void InsertAeronave(Aeronave novaAeronave)
@@ -136,6 +248,7 @@ namespace AeroportoBD
         }
 
         #endregion
+
 
         #region VOO
 
