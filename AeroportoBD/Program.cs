@@ -25,6 +25,70 @@ namespace AeroportoBD
         static List<string> listDestino = new List<string>();// iata-classe pra cadastrar 
         #endregion
 
+        #region Atualizar Passagens e Voos
+        static void Atualizar()
+        {
+            try
+            {
+                //Exclui voos já realizados
+                for (int j = 0; j < listVoo.Count; j++)
+                {
+                    if (DateTime.Compare(listVoo[j].DataVoo, System.DateTime.Now) < 0)
+                    {
+                        for (int i = 0; i < listPassagem.Count; i++)
+                        {
+                            if (listPassagem[i].IDVoo == listVoo[j].IDVoo)
+                            {
+                                if (listPassagem.Count > 1)
+                                {
+                                    Passagem aux = listPassagem[i + 1];
+                                    listPassagem.Remove(listPassagem[i]);
+                                    listPassagem[i] = aux;
+                                    i--;
+                                }
+                                else
+                                {
+                                    listPassagem.Remove(listPassagem[i]);
+                                }
+                            }
+                        }
+
+                        voosrealizados.Add(listVoo[j].DadosVooRealizado());
+                      //  GravarVooRealizado(); insert
+
+                        if (listVoo.Count > 1)
+                        {
+                            Voo auxi = listVoo[j + 1];
+                            listVoo.Remove(listVoo[j]);
+                            listVoo[j] = auxi;
+                            j--;
+                        }
+                        else
+                        {
+                            listVoo.Remove(listVoo[j]);
+                        }
+                    }
+                }
+
+                //Altera as passagens reservadas para livres em 2 dias após a compra
+                foreach (var passagem in listPassagem)
+                {
+                    if (passagem.Situacao == 'R' && DateTime.Compare(passagem.DataUltimaOperacao.AddDays(2), System.DateTime.Now) < 0)
+                    {
+                        passagem.Situacao = 'L';
+                    }
+                }
+              //  GravarVoo(); insert
+              //  GravarPassagem(); insert
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("ERRO de arquivo! Não foi possível atualizar os voos e passagens!");
+                Pausa();
+            }
+        }
+        #endregion
+
         #region DataConversão
         static public DateTime DateConverter(string data)
         {
@@ -121,7 +185,7 @@ namespace AeroportoBD
                 return null;
             }
         }
-        #endregion
+        #endregion 
 
         #region GerarIDVOO, IDVENDA, IDITEMVENDA
         static public string GeradorId(String id)
@@ -242,7 +306,7 @@ namespace AeroportoBD
         }
         #endregion
 
-        #region Validações entrada
+        #region Validar Entrada
         static string ValidarEntrada(string entrada)
         {
             string[] vetorletras = new string[] {"Ç","ç","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S",
@@ -1431,7 +1495,8 @@ namespace AeroportoBD
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
 
-                #endregion region
+                #endregion
+
 
                 case "aeronave":
 
@@ -1487,7 +1552,10 @@ namespace AeroportoBD
 
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
+
+
                 #endregion
+
 
                 case "aeronaveeditar":
 
@@ -1539,6 +1607,9 @@ namespace AeroportoBD
 
                 #endregion
 
+
+
+
                 case "valorpassagem":
 
                     #region ValorPassagem
@@ -1570,7 +1641,7 @@ namespace AeroportoBD
 
                 #endregion
 
-                case "cpflogin": // login para vender a passagem
+                case "cpflogin":
 
                     #region CpflLogin
 
@@ -1660,9 +1731,12 @@ namespace AeroportoBD
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
 
+
+
                 #endregion
 
-                case "cpfexiste": // buscar na lista de cpf
+
+                case "cpfexiste":
 
                     #region CpfExiste
 
@@ -1709,7 +1783,7 @@ namespace AeroportoBD
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
 
-                #endregion 
+                #endregion
 
                 case "idvoo":
 
@@ -1812,9 +1886,9 @@ namespace AeroportoBD
 
                 #endregion
 
-                case "cnpjexiste": // login para cadastrar voo
+                case "cnpjexiste":
 
-                    #region cnplogin 
+                    #region cnpjogin
                     do
                     {
                         retornar = false;
@@ -1861,7 +1935,6 @@ namespace AeroportoBD
 
                 default:
                     return null;
-
             }
         }
         #endregion
@@ -1957,19 +2030,19 @@ namespace AeroportoBD
                         TelaInicialCompanhiasAereas();
                         break;
                     case 2:
-                        TelaInicialPassageiros();
+                        //TelaInicialPassageiros();
                         break;
                     case 3:
-                        TelaVendas();
+                       // TelaVendas();
                         break;
                     case 4:
-                        TelaInicialCpfRestritos();
+                      //  TelaInicialCpfRestritos();
                         break;
                     case 5:
-                        TelaInicialCnpjBloqueados();
+                     //   TelaInicialCnpjBloqueados();
                         break;
                     case 6:
-                        TelaVerAeronavesCadastradas();
+                    //    TelaVerAeronavesCadastradas();
                         break;
                     case 7:
                         foreach (var voorealizado in voosrealizados)
@@ -2026,7 +2099,9 @@ namespace AeroportoBD
             } while (opc != 0);
         }
         #endregion
-      static void TelaLoginCompanhiaAerea()
+
+        #region Companhia Aérea funções
+        static void TelaLoginCompanhiaAerea()
         {
             string cnpj;
             CompanhiaAerea compAtivo;
@@ -2041,7 +2116,7 @@ namespace AeroportoBD
                 if (companhia.Cnpj == cnpj)
                 {
                     compAtivo = companhia;
-                    TelaOpcoesCompanhiaAerea(compAtivo);
+                    //TelaOpcoesCompanhiaAerea(compAtivo);
                 }
             }
 
@@ -2071,7 +2146,7 @@ namespace AeroportoBD
 
         }
 
-
+        #endregion
         static void Main(string[] args)
         {
             TelaInicial();
