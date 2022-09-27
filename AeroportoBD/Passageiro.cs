@@ -16,7 +16,7 @@ namespace AeroportoBD
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
 
-
+        public Passageiro() { }
 
         public Passageiro(string cpf, string nome, DateTime dataNascimento, char sexo, DateTime UltimaCompra, DateTime DataCadastro, char Situacao)
         {
