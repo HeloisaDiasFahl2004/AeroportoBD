@@ -11,17 +11,16 @@ namespace AeroportoBD
         public string IDVenda { get; set; }
         public DateTime DataVenda { get; set; }
         public float ValorTotal { get; set; }
-        public string Passageiro { get; set; }
-        public Venda(string idVenda, DateTime dataVenda, float valorTotal, string passageiro)
-        {
-            this.IDVenda = idVenda;
+        public string CPF { get; set; }
+        public Venda(string idVenda, DateTime dataVenda, float valorTotal, string cpf)
+        {  this.IDVenda = idVenda;
             this.DataVenda = dataVenda;
             this.ValorTotal = valorTotal;
-            this.Passageiro = passageiro;
+            this.CPF = cpf;
         }
         public override string ToString()
         {
-            return "\nDADOS VENDA: \nID Venda: " + IDVenda + "\nData Venda: " + DataVenda.ToString("dd/MM/yyyy HH:mm") +  "\nValor Total: " + ValorTotal+ "\nPassageiro: " + Passageiro ;
+            return "\nDADOS VENDA: \nID Venda: " + IDVenda + "\nData Venda: " + DataVenda.ToString("dd/MM/yyyy HH:mm") +  "\nValor Total: " + ValorTotal+ "\nPassageiro(CPF): " + CPF ;
         }
        /* public string ObterDados()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data.SqlClient;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace AeroportoBD
         #region Declarações
         static BD bd = new BD();
 
-       // BD bd = new BD();
+        // BD bd = new BD();
         static SqlConnection conexaosql = new SqlConnection(bd.Caminho());
 
         static CompanhiaAerea c = new CompanhiaAerea();//Pra poder chamar seus métodos
@@ -60,7 +61,7 @@ namespace AeroportoBD
                         }
 
                         voosrealizados.Add(listVoo[j].DadosVooRealizado());
-                      //  GravarVooRealizado(); insert
+                        //  GravarVooRealizado(); insert
 
                         if (listVoo.Count > 1)
                         {
@@ -84,8 +85,8 @@ namespace AeroportoBD
                         passagem.Situacao = 'L';
                     }
                 }
-              //  GravarVoo(); insert
-              //  GravarPassagem(); insert
+                //  GravarVoo(); insert
+                //  GravarPassagem(); insert
             }
             catch (Exception)
             {
@@ -1998,6 +1999,7 @@ namespace AeroportoBD
 
         #endregion
 
+
         #region MENU INICIAL
         static void TelaInicial()
         {
@@ -2007,12 +2009,12 @@ namespace AeroportoBD
                 Console.Clear();
                 Console.WriteLine("Bem vindo à On The Fly!");
                 Console.WriteLine("\nPor Favor, informe a Opção Desejada:\n");
-                Console.WriteLine(" 1 - Companhia Aérea\n");
-                Console.WriteLine(" 2 - Passageiro\n");
+                Console.WriteLine(" 1 - Companhia Aérea\n"); //OK
+                Console.WriteLine(" 2 - Passageiro\n"); // OK
                 Console.WriteLine(" 3 - Compras de Passagens\n");
                 Console.WriteLine(" 4 - Acesso a Lista de CPF Restritos\n");
                 Console.WriteLine(" 5 - Acesso a Lista de CNPJ Restritos\n");
-                Console.WriteLine(" 6 - Aeronaves\n");
+                Console.WriteLine(" 6 - Aeronaves\n"); // OK
                 Console.WriteLine(" 7 - Voos Realizados\n");
                 Console.WriteLine(" 8 - Voos Disponíveis");
                 Console.WriteLine("\n 0 - Encerrar Sessão\n");
@@ -2041,16 +2043,16 @@ namespace AeroportoBD
 
                     case 3:
 
-                     //   TelaVendas();
+                        //   TelaVendas();
 
                         break;
 
                     case 4:
-                     //   TelaInicialCpfRestritos();
+                        //   TelaInicialCpfRestritos();
                         break;
 
                     case 5:
-                    //    TelaInicialCnpjRestritos();
+                        //    TelaInicialCnpjRestritos();
                         break;
 
                     case 6:
@@ -2082,148 +2084,110 @@ namespace AeroportoBD
         }
         #endregion
 
-        #region MENU COMPANHIA AÉREA
-        static void TelaInicialCompanhiasAereas()
+
+        #region  VENDAS
+        static void TelaVendas()
         {
-            int opc = 0;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("\nInforme a Opção Desejada:\n");
-                Console.WriteLine(" 1 - Companhia Aérea já cadastrada\n");
-                Console.WriteLine(" 2 - Cadastrar uma Nova Companhia Aérea\n");
-                Console.WriteLine(" 3 - Visualizar todas as Companhias Aéreas\n");
-                Console.WriteLine("\n 0 - SAIR\n");
-                opc = int.Parse(ValidarEntrada("menu"));
-                Console.Clear();
 
-                switch (opc)
-                {
-                    case 0:
-                        TelaInicial();
-                        break;
-
-                    case 1:
-                        TelaLoginCompanhiaAerea();
-                        break;
-
-                    case 2:
-                        TelaCadastrarCompanhiaAerea();
-                        break;
-                }
-
-            } while (opc != 0);
-        }
-        #endregion
-
-        #region MENIU PASSAGEIRO
-        static void TelaInicialPassageiros()
-        {
-            int opc = 0;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("\nInforme a Opção Desejada:\n");
-                Console.WriteLine(" 1 - Passageiro já cadastrado\n");
-                Console.WriteLine(" 2 - Cadastrar um novo Passageiro\n");
-                Console.WriteLine(" 3 - Visualizar todos Passageiros\n");
-                Console.WriteLine("\n 0 - SAIR\n");
-                opc = int.Parse(ValidarEntrada("menu"));
-                Console.Clear();
-
-                switch (opc)
-                {
-                    default:
-                        Console.WriteLine("Opção Inválida!");
-                        break;
-                    case 0:
-                        TelaInicial();
-                        break;
-
-                    case 1:
-                        TelaLoginPassageiro();
-                        break;
-
-                    case 2:
-                        TelaCadastrarPassageiro();
-                        break;
-                    case 3:
-                        String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO";
-                        bd.SelectPassageiro(conexaosql,selectP);
-                        break;
-
-                }
-
-            } while (opc != 0);
-        }
-        #endregion
-
-        #region Opções Aeronave
-        static void TelaCadastrarAeronave(CompanhiaAerea compAtivo)
-        {
-            string idAeronave;
-            int capacidade;
-
-            char situacao;
-            Aeronave novaAeronave;
-
-            idAeronave = ValidarEntrada("idaeronave");
-            if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
-
-            capacidade = int.Parse(ValidarEntrada("capacidade"));
-            if (capacidade.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
-
-            situacao = char.Parse(ValidarEntrada("situacao"));
-            if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
-
-            novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, compAtivo.Cnpj);
-            listAeronaves.Add(novaAeronave);
-            //   GravarAeronaves();
-            bd.InsertAeronave(novaAeronave);
-            Console.WriteLine("\nCadastro Realizado com Sucesso!");
-            Pausa();
-            TelaOpcoesCompanhiaAerea(compAtivo);
-        }
-
-        static void TelaVerAeronavesCadastradas()
-        {
+            int opc;
+            Console.WriteLine("Informe a opção desejada: \n");
+            Console.WriteLine("1 - Compra de Passagem\n");
+            Console.WriteLine("2 - Ver Passagens Vendidas\n");
+            Console.WriteLine("3 - Ver Passagens Reservadas\n");
+            Console.WriteLine("\n0 -  SAIR\n");
+            opc = int.Parse(ValidarEntrada("menu"));
             Console.Clear();
 
-            foreach (var aeronave in listAeronaves)
+            switch (opc)
             {
-                Console.WriteLine(aeronave.ToString() + "\n");
+                case 0:
+                    TelaInicialPassageiros();
+                    break;
+                case 1:
+                    string cpfLogin = ValidarEntrada("cpflogin");
+                    if (cpfLogin == null) TelaInicial();
+                    Passageiro passageiroAtivo = null;
+                    foreach (var passageiro in listPassageiro)
+                    {
+                        if (passageiro.Cpf == cpfLogin)
+                        {
+                            passageiroAtivo = passageiro;
+                            break;
+                        }
+                    }
+                    Console.Clear();
+                    TelaVoosDisponiveis(passageiroAtivo);
+                    break;
+                case 2:
+                 //   TelaHistoricoVendas();
+                    break;
+                case 3:
+                 //   TelaHistoricoReservadas();
+                    break;
             }
-            Pausa();
-            TelaInicial();
         }
 
-        static void TelaEditarAeronave(CompanhiaAerea compAtivo)
+        #endregion
+
+        #region Históricos
+        static void TelaHistoricoVendas()
         {
-            string idaeronave = ValidarEntrada("aeronaveeditar");
-            if (idaeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
-
-            string situacao = ValidarEntrada("situacao");
-            if (situacao == null) TelaOpcoesCompanhiaAerea(compAtivo);
-            char s = char.Parse(situacao);
-
-            foreach (var aeronave in listAeronaves)
+            int opc;
+            Console.WriteLine("IDVenda \t DataVenda \t DataUltimaOperacao \t ValorTotal \t CPF");
+            string selectVENDA = $"SELECT  IDVenda,DataVenda,ValorTotal,CPF FROM Venda WHERE Situacao='{'P'}'";
+            bd.SelectVenda(conexaosql, selectVENDA);
+            foreach (var venda in listVenda)
             {
-                if (aeronave.Inscricao == idaeronave)
+                Console.WriteLine("ID Venda: " + venda.IDVenda + " Valor: " + venda.ValorTotal + " Data da Venda: " + venda.DataVenda);
+            }
+            Console.WriteLine("\n----------------------------------------------------------------------------------------------");
+            Console.WriteLine("\n1 - Detalhes da Venda: ");
+            Console.WriteLine("0 - Voltar");
+            opc = int.Parse(ValidarEntrada("menu"));
+            Console.Clear();
+
+            switch (opc)
+            {
+                case 0:
+                    TelaVendas();
+                    break;
+                case 1:
+                    TelaDescricaoItemVenda();
+                    break;
+            }
+        }
+
+        static void TelaDescricaoItemVenda()
+        {
+
+            string idvenda = ValidarEntrada("idvenda");
+            if (idvenda == null) TelaVendas();
+            foreach (var itemVenda in listItemVenda)
+            {
+                if (itemVenda.IDItemVenda == idvenda)
                 {
-                    aeronave.Situacao = s;
-                    string updateSituacao = $"UPDATE Aeronave set Situacao = '{s}' WHERE INSCRICAO='{idaeronave}';";
-                    bd.UpdateDado(conexaosql, updateSituacao);
-                  
+                    Console.WriteLine(itemVenda.ToString());
                 }
             }
-            Console.Clear();
-            Console.WriteLine("Situação alterada com sucesso!");
             Pausa();
-            TelaOpcoesCompanhiaAerea(compAtivo);
+            TelaVendas();
         }
+
+        static void TelaHistoricoReservadas()
+        {
+           
+            string selectReserva = $"SELECT IDPASSAGEM,IDVOO,DataUltimaOperacao ,ValorUnitario,Situacao FROM Passagem WHERE Situacao='{'R'}'";
+            bd.SelectReserva(conexaosql, selectReserva);
+           
+            Pausa();
+            TelaVendas();
+        }
+
+
         #endregion
 
         #region Opções Voo
+        //Cadastro Voo com ID Aleatório, Cadastro Passagens desse voo com ID Aleatório
         static void TelaCadastrarVoo(CompanhiaAerea compAtivo)
         {
             Console.Clear();
@@ -2239,6 +2203,7 @@ namespace AeroportoBD
                 destino = ValidarEntrada("destino");
                 if (destino == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
+                //Preciso da aeronave apenas para cadastrar as passagens abaixo, não é necessário eu ter uma propriedade aeronave em voo.
                 idAeronave = ValidarEntrada("aeronave");
                 if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
@@ -2252,9 +2217,11 @@ namespace AeroportoBD
                 idVoo = GeradorId("idvoo");
                 if (idVoo == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
-                Voo novoVoo = new Voo(idVoo, destino, dataVoo, System.DateTime.Now, 0,'A');
+                Voo novoVoo = new Voo(idVoo, destino, dataVoo, System.DateTime.Now, 0, 'A');
                 listVoo.Add(novoVoo);
-               // GravarVoo();
+                // GravarVoo();
+                string insertVOO = $"INSERT INTO VOO(IDVOO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao) VALUES('{idVoo}'," + $"'{destino}','{dataVoo}','{novoVoo.DataCadastro}','{novoVoo.QuantidadeAssentosOcupados}','{novoVoo.Situacao}');";
+                bd.InsertDado(conexaosql, insertVOO);
                 Aeronave a = null;
                 foreach (var aeronave in listAeronaves)
                 {
@@ -2271,6 +2238,9 @@ namespace AeroportoBD
                     Passagem passagem = new Passagem(idsPassagem[i], idVoo, System.DateTime.Now, valor, 'L');
                     listPassagem.Add(passagem);
                     //GravarPassagem();
+                    string insertPassagem = $"INSERT INTO Passagem(IDPASSAGEM, IDVOO,DataUltimaOperacao,ValorUnitario,Situacao) VALUES('{idsPassagem}'," + $"'{idVoo}','{passagem.DataUltimaOperacao}','{passagem.ValorUnitario}','{passagem.Situacao}');";
+                    bd.InsertDado(conexaosql, insertPassagem);
+
                 }
                 Console.WriteLine("\nCadastro Realizado com Sucesso!");
                 Pausa();
@@ -2282,8 +2252,8 @@ namespace AeroportoBD
                 Pausa();
                 TelaOpcoesCompanhiaAerea(compAtivo);
             }
-        }
-        static void TelaVoosDisponiveis(Passageiro passageiroAtivo)
+        } // OK
+        static void TelaVoosDisponiveis(Passageiro passageiroAtivo)  // OK
         {
             int opc;
             foreach (var Voo in listVoo)
@@ -2302,20 +2272,195 @@ namespace AeroportoBD
             switch (opc)
             {
                 case 0:
-                  //  TelaVendas();
+                     TelaVendas();
                     break;
                 case 1:
                     Console.Clear();
                     string idvoo = ValidarEntrada("idvoo");
                     if (idvoo == null) TelaVoosDisponiveis(passageiroAtivo);
-                    //TelaDescricaoVoo(idvoo, passageiroAtivo);
+                    TelaDescricaoVoo(idvoo, passageiroAtivo);
                     break;
             }
         }
 
+        static void TelaDescricaoVoo(string idvoo, Passageiro passageiroAtivo)
+        {
+
+            int opc;
+            Voo vooatual = null;
+            foreach (var voo in listVoo)
+            {
+                if (voo.IDVoo == idvoo)
+                {
+                    vooatual = voo;
+                    break;
+                }
+                else
+                {
+                    vooatual = null;
+                }
+            }
+            Console.WriteLine(vooatual.ToString());
+            Console.WriteLine("\n----------------------------------------------------------------------------------------------");
+            Console.WriteLine("1 - Comprar: ");
+            Console.WriteLine("2 - Reservar: ");
+            Console.WriteLine("0 - Voltar: ");
+            opc = int.Parse(ValidarEntrada("menu"));
+            Console.Clear();
+
+            switch (opc)
+            {
+                case 0:
+                    TelaVoosDisponiveis(passageiroAtivo);
+                    break;
+                case 1:
+                    int cont = 0;
+                    bool retornar = false;
+                    int quantPassagem;
+                    do
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\nInforme a quantidade de passagens (máximo 4): \n1  2  3  4");
+                        quantPassagem = int.Parse(ValidarEntrada("menu"));
+                        if (quantPassagem > 0 && quantPassagem <= 4)
+                        {
+                            foreach (var passagem in listPassagem)
+                            {
+                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                {
+                                    cont++;
+                                }
+                            }
+                            if (cont >= quantPassagem)
+                            {
+                                cont = 0;
+                                Passagem p = null;
+                                foreach (var passagem in listPassagem)
+                                {
+                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                    {
+                                        p = passagem;
+                                        passagem.Situacao = 'P';
+                                        string updatePassagem = $"UPDATE Passagem set Situacao = '{passagem.Situacao}' WHERE IDVOO='{passagem.IDVoo}'AND IDPASSAGEM='{passagem.IDPassagem}');";
+                                        bd.UpdateDado(conexaosql, updatePassagem);
+                                        passagem.DataUltimaOperacao = System.DateTime.Now;
+                                     
+                                        VendaPassagem item = new VendaPassagem(GeradorId("iditemvenda"), GeradorId("idvenda"), passagem.ValorUnitario);
+                                        listItemVenda.Add(item);
+                                        string insertITEMVENDA = $"INSERT INTO VendaPassagem(IDITEMVENDA,IDVENDA,ValorUnitario) VALUES('{item.IDItemVenda}'," + $"'{item.IDVenda}','{item.ValorUnitario}';)";
+                                        bd.InsertDado(conexaosql, insertITEMVENDA);
+                                        cont++;
+                                    }
+
+                                    if (cont == quantPassagem)
+                                    {
+                                        retornar = true;
+                                        Venda venda = new Venda(GeradorId("idvenda"), System.DateTime.Now,  (p.ValorUnitario * quantPassagem), passageiroAtivo.Cpf);
+                                        listVenda.Add(venda);
+                                        string insertVENDA = $"INSERT INTO Venda(IDVENDA,DataVenda,ValorTotal,CPF) VALUES('{venda.IDVenda}'," + $"'{venda.DataVenda}','{venda.ValorTotal}','{passageiroAtivo.Cpf}';)";
+                                        bd.InsertDado(conexaosql, insertVENDA);
+                                  
+                                        passageiroAtivo.DataUltimaCompra = System.DateTime.Now;
+                                        string updatePassageiro = $"UPDATE Passageiro set DataUltimaCompra = '{passageiroAtivo.DataUltimaCompra}' WHERE CPF='{passageiroAtivo.Cpf}');";
+                                        bd.UpdateDado(conexaosql, updatePassageiro);
+                                   
+
+                                      
+                                        foreach (var voo in listVoo)
+                                        {
+                                            if (idvoo == voo.IDVoo)
+                                            {
+                                                voo.QuantidadeAssentosOcupados = voo.QuantidadeAssentosOcupados + quantPassagem;
+                                               
+                                                break;
+                                            }
+                                        }
+                                     
+                                    
+
+                                        Console.WriteLine("Compra realizada com sucesso!");
+                                        Pausa();
+                                        TelaVendas();
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
+                                retornar = PausaMensagem();
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Só é possível comprar [4] passagens por venda");
+                            retornar = PausaMensagem();
+                        }
+                    } while (retornar == true);
+                 //   TelaHistoricoVendas();
+                    break;
+                case 2:
+
+                    cont = 0;
+                    retornar = false;
+                    do
+                    {
+                        Console.WriteLine("\nInforme a quantidade de passagens para reserva (máximo 4): \n1  2  3  4");
+                        quantPassagem = int.Parse(ValidarEntrada("menu"));
+                        if (quantPassagem > 0 && quantPassagem <= 4)
+                        {
+                            foreach (var passagem in listPassagem)
+                            {
+                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                {
+                                    cont++;
+                                }
+                            }
+                            if (cont >= quantPassagem)
+                            {
+                                cont = 0;
+                                Passagem p = null;
+                                foreach (var passagem in listPassagem)
+                                {
+                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
+                                    {
+                                        p = passagem;
+                                        passagem.Situacao = 'R';
+                                        passagem.DataUltimaOperacao = System.DateTime.Now;
+                                        string updatePassagem = $"UPDATE Passagem set Situacao = '{passagem.Situacao}' WHERE IDVOO='{passagem.IDVoo}'AND IDPASSAGEM='{passagem.IDPassagem}');";
+                                        bd.UpdateDado(conexaosql, updatePassagem);
+                                     
+                                        cont++;
+                                    }
+                                    if (cont == quantPassagem) break;
+                                }
+                                Console.Clear();
+                                Console.WriteLine("Reserva realizada com sucesso!");
+                                Pausa();
+                                TelaVendas();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
+                                retornar = PausaMensagem();
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Só é possível reservar [4] passagens por venda");
+                            retornar = PausaMensagem();
+                        }
+                    } while (retornar == true);
+                  //  TelaHistoricoReservadas();
+                    break;
+            }
+        } //
+
+
         #endregion
 
-        // Login/Cadastrar/Editar  -- LOGIN ERRO
+
+        // Login/Cadastrar/Opções/Editar  -- LOGIN ERRO
         #region Companhia Aérea Opções
         static void TelaLoginCompanhiaAerea()
         {
@@ -2336,7 +2481,7 @@ namespace AeroportoBD
                 }
             }
 
-        }
+        } // ERRO
         static void TelaCadastrarCompanhiaAerea()
         {
             string nomeComp;
@@ -2354,14 +2499,14 @@ namespace AeroportoBD
 
             CompanhiaAerea novaComp = new CompanhiaAerea(cnpj, nomeComp, DateConverter(dataAbertura), System.DateTime.Now, System.DateTime.Now, 'A');
             listCompanhia.Add(novaComp);
-            //GravarCompanhiaAerea();
+            
             string insert = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao) VALUES('{novaComp.Cnpj}'," + $"'{novaComp.RazaoSocial}','{novaComp.DataAbertura}','{novaComp.DataUltimoVoo}','{novaComp.DataCadastro}','{novaComp.Situacao}');";
             bd = new BD();
             bd.InsertDado(conexaosql, insert);
             TelaInicialCompanhiasAereas();
 
 
-        }
+        } // OK
         static void TelaOpcoesCompanhiaAerea(CompanhiaAerea compAtivo)
         {
             int opc = 0;
@@ -2370,11 +2515,12 @@ namespace AeroportoBD
                 Console.Clear();
                 Console.WriteLine("\nCompanhia Aérea " + compAtivo.RazaoSocial);
                 Console.WriteLine("\nPor Favor, informe a Opção Desejada:\n");
-                Console.WriteLine(" 1 - Cadastrar uma nova Aeronave\n"); //insert aeronave
-                Console.WriteLine(" 2 - Programar um novo Voo\n"); //insert voo
-                Console.WriteLine(" 3 - Cancelar um voo\n"); // update voo situacao=C
-                Console.WriteLine(" 4 - Ativar/Inativar Aeronave\n"); // update aeronave situacao = A/I
-                Console.WriteLine(" 5 - Editar dados da Companhia Aerea\n"); // update Companhia Aerea
+                Console.WriteLine(" 1 - Cadastrar uma nova Aeronave\n"); // OK
+                Console.WriteLine(" 2 - Programar um novo Voo\n"); // OK 
+                Console.WriteLine(" 3 - Cancelar um voo\n"); // update voo situacao=C -- OK
+                Console.WriteLine(" 4 - Ativar/Inativar Aeronave\n"); // update aeronave situacao = A/I -- OK
+                Console.WriteLine(" 5 - Editar dados da Companhia Aerea\n"); // update Companhia Aerea  -- OK
+                Console.WriteLine(" 6 - Vizualizar dados da Companhia Aerea\n");// OK
 
                 Console.WriteLine("\n 0 - Encerrar Sessão\n");
                 opc = int.Parse(ValidarEntrada("menu"));
@@ -2390,13 +2536,13 @@ namespace AeroportoBD
 
                     case 1:
 
-                     TelaCadastrarAeronave(compAtivo);
+                        TelaCadastrarAeronave(compAtivo); //OK
 
                         break;
 
                     case 2:
 
-                     TelaCadastrarVoo(compAtivo);
+                        TelaCadastrarVoo(compAtivo); // OK
 
                         break;
 
@@ -2447,21 +2593,30 @@ namespace AeroportoBD
 
                     case 4:
 
-                     TelaEditarAeronave(compAtivo);
+                        TelaEditarAeronave(compAtivo); //OK
 
 
                         break;
 
                     case 5:
 
-                        TelaEditarCompanhiaAerea(compAtivo);
+                        TelaEditarCompanhiaAerea(compAtivo); // OK
 
+                        break;
+                    case 6:
+                        Console.WriteLine("Confirmação de seu CNPJ ");
+                        string cnpj = ValidarEntrada("cnpjexiste");
+                        String selectComp = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
+                        bd.SelectUmDadoCompanhia(conexaosql, selectComp);
+                        break;
+                    default:
+                        Console.WriteLine("Opção Inválida!");
                         break;
                 }
 
 
             } while (true);
-        }
+        } // Visualiza
         static void TelaEditarCompanhiaAerea(CompanhiaAerea companhiaAerea)
         {
             DateTime datanova;
@@ -2500,7 +2655,7 @@ namespace AeroportoBD
                         //  GravarCompanhiaAerea();
                         string updateDataAbertura = $"UPDATE CompanhiaAerea set DataAbertura = '{datanova}' WHERE CNPJ='{cnpj}';";
                         bd.UpdateDado(conexaosql, updateDataAbertura);
-                     
+
                         Console.Clear();
                         Console.WriteLine("\nData de abertura alterada com Sucesso!");
                         Pausa();
@@ -2537,7 +2692,7 @@ namespace AeroportoBD
                 }
 
             } while (true);
-        }
+        } // OK
         #endregion
 
         //Login/Cadastrar/Editar -- LOGIN ERRO
@@ -2550,11 +2705,13 @@ namespace AeroportoBD
             cpf = ValidarEntrada("cpfexiste");
             if (cpf == null) TelaInicialPassageiros();
             //se encontrar o cpf
-            Console.WriteLine("Deseja 1-Editar Dados 2-Visualizar Passageiro");
+            Console.WriteLine("Login efetuado com sucesso! ");
+            Pausa();
+            Console.Write("Deseja:  1 - Editar Dados   2 - Visualizar Passageiro ");
             int quero = int.Parse(Console.ReadLine());
             if (quero == 1)
             {
-              
+
                 foreach (Passageiro passageiro in listPassageiro)
                 {
                     if (passageiro.Cpf == cpf)
@@ -2564,17 +2721,17 @@ namespace AeroportoBD
                     }
                 }
             }
-            else if(quero == 2)
+            else if (quero == 2)
             {
                 String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.SelectUmDadoPassageiro(conexaosql,selectP);
+                bd.SelectUmDadoPassageiro(conexaosql, selectP);
                 Pausa();
             }
-            else 
+            else
             {
                 Console.WriteLine("Opção Inválida!");
             }
-        } // ERRO
+        } // Visualiza / ERRO-Login
         static void TelaCadastrarPassageiro()
         {
             do
@@ -2600,7 +2757,7 @@ namespace AeroportoBD
                 //  GravarPassageiro();
                 string insert = $"INSERT INTO Passageiro(CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao) VALUES('{novoPassageiro.Cpf}'," + $"'{novoPassageiro.Nome}','{novoPassageiro.DataNascimento}','{novoPassageiro.Sexo}','{novoPassageiro.DataUltimaCompra}','{novoPassageiro.DataCadastro}','{novoPassageiro.Situacao}');";
                 bd = new BD();
-                bd.InsertDado(conexaosql,insert);
+                bd.InsertDado(conexaosql, insert);
                 Console.WriteLine("\nPassageiro Cadastrado com Sucesso!");
                 Pausa();
                 TelaInicialPassageiros();
@@ -2732,7 +2889,158 @@ namespace AeroportoBD
 
         #endregion
 
+        #region MENU COMPANHIA AÉREA
+        static void TelaInicialCompanhiasAereas()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Companhia Aérea já cadastrada\n");
+                Console.WriteLine(" 2 - Cadastrar uma Nova Companhia Aérea\n");
+                Console.WriteLine(" 3 - Visualizar todas as Companhias Aéreas\n");
+                Console.WriteLine("\n 0 - SAIR\n");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
 
+                switch (opc)
+                {
+                    default:
+                        Console.WriteLine("Opção Inválida!");
+                        break;
+                    case 0:
+                        TelaInicial();
+                        break;
+
+                    case 1:
+                        TelaLoginCompanhiaAerea();
+                        break;
+
+                    case 2:
+                        TelaCadastrarCompanhiaAerea();
+                        break;
+                    case 3:
+                        String selectC = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea";
+                        bd.SelectCompanhiaAerea(conexaosql, selectC);
+                        break;
+                }
+
+            } while (opc != 0);
+        }
+        #endregion
+
+
+        #region MENU PASSAGEIRO
+        static void TelaInicialPassageiros()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Passageiro já cadastrado\n");
+                Console.WriteLine(" 2 - Cadastrar um novo Passageiro\n");
+                Console.WriteLine(" 3 - Visualizar todos Passageiros\n");
+                Console.WriteLine("\n 0 - SAIR\n");
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    default:
+                        Console.WriteLine("Opção Inválida!");
+                        break;
+                    case 0:
+                        TelaInicial();
+                        break;
+
+                    case 1:
+                        TelaLoginPassageiro();
+                        break;
+
+                    case 2:
+                        TelaCadastrarPassageiro();
+                        break;
+                    case 3:
+                        String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO";
+                        bd.SelectPassageiro(conexaosql, selectP);
+                        break;
+
+                }
+
+            } while (opc != 0);
+        }
+        #endregion
+
+        //Cadastra/Vizualiza/Edita 
+        #region Opções Aeronave
+        static void TelaCadastrarAeronave(CompanhiaAerea compAtivo)
+        {
+            string idAeronave;
+            int capacidade;
+
+            char situacao;
+            Aeronave novaAeronave;
+
+            idAeronave = ValidarEntrada("idaeronave");
+            if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            capacidade = int.Parse(ValidarEntrada("capacidade"));
+            if (capacidade.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            situacao = char.Parse(ValidarEntrada("situacao"));
+            if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, compAtivo.Cnpj);
+            listAeronaves.Add(novaAeronave);
+            
+            string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,DataUltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{compAtivo.Cnpj}');";
+            bd = new BD();
+            bd.InsertDado(conexaosql, insert);
+            Console.WriteLine("\nCadastro Realizado com Sucesso!");
+            Pausa();
+            TelaOpcoesCompanhiaAerea(compAtivo);
+        } //OK
+
+        static void TelaVerAeronavesCadastradas()
+        {
+            Console.Clear();
+
+            foreach (var aeronave in listAeronaves)
+            {
+                String selectA = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE;";
+                bd.SelectAeronave(conexaosql, selectA);
+            }
+            Pausa();
+            TelaInicial();
+        } // OK
+
+        static void TelaEditarAeronave(CompanhiaAerea compAtivo)
+        {
+            string idaeronave = ValidarEntrada("aeronaveeditar");
+            if (idaeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
+
+            string situacao = ValidarEntrada("situacao");
+            if (situacao == null) TelaOpcoesCompanhiaAerea(compAtivo);
+            char s = char.Parse(situacao);
+
+            foreach (var aeronave in listAeronaves)
+            {
+                if (aeronave.Inscricao == idaeronave)
+                {
+                    aeronave.Situacao = s;
+                    string updateSituacao = $"UPDATE Aeronave set Situacao = '{s}' WHERE INSCRICAO='{idaeronave}';";
+                    bd.UpdateDado(conexaosql, updateSituacao);
+
+                }
+            }
+            Console.Clear();
+            Console.WriteLine("Situação alterada com sucesso!");
+            Pausa();
+            TelaOpcoesCompanhiaAerea(compAtivo);
+        } // OK
+        #endregion 
         static void Main(string[] args)
         {
             TelaInicial();
