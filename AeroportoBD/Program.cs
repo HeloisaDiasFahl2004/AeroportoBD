@@ -1757,20 +1757,12 @@ namespace AeroportoBD
                             //Consulta o cpf do passageiro escolhido da lista de passageiros:
                             encontrado = false;
                             string localiza = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}'); ";
-                            bd.Localizar(conexaosql,localiza);
-                            /*
-                            foreach (var passageiro in listPassageiro)
-                            {
-                                if (passageiro.Cpf == cpf)
-                                {
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                           
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, localiza))) 
+                            { 
+                                encontrado = true;
                             }
+                       
                             if (encontrado == true)
                             {
                                 return cpf;
@@ -1779,7 +1771,7 @@ namespace AeroportoBD
                             {
                                 Console.WriteLine("CPF não encontrado! Insira um CPF válido!");
                                 retornar = PausaMensagem();
-                            }*/
+                            }
                         }
                         catch (Exception)
                         {
@@ -1907,23 +1899,15 @@ namespace AeroportoBD
                         {
                             string cnpj = Console.ReadLine();
 
-                            foreach (var companhia in listCompanhia)
+                           String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoCompanhia(conexaosql, localiza)))
                             {
-                                if (companhia.Cnpj == cnpj)
-                                {
-                                    c = companhia;
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                                encontrado = true;
                             }
 
                             if (encontrado == true)
                             {
-                                return cnpj;
+                                return cnpj; ;
                             }
                             else
                             {
@@ -2543,7 +2527,7 @@ namespace AeroportoBD
 
                     case 3:
                         string selectVoo = $"SELECT INSCRICAO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo";
-                        bd.SelectVoo(conexaosql, selectVoo);
+                     //   bd.SelectVoo(conexaosql, selectVoo);
 
                         Console.WriteLine("\n----------------------------------------------------------------------------------------------");
                         Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
@@ -2699,7 +2683,7 @@ namespace AeroportoBD
             if (quero == 1)
             {
                 String selectPassageiro = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.Localizar(conexaosql, selectPassageiro);
+                bd.SelectUmDadoPassageiro(conexaosql, selectPassageiro);
                 TelaEditarPassageiro(passageiroAtivo);
 
             }

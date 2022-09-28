@@ -10,6 +10,7 @@ namespace AeroportoBD
 {
     internal class BD
     {
+        #region Banco de Dados
         string Conexao = "Data Source = 'localhost\\SQLSERVER'; Initial Catalog = OnTheFly;User Id = sa; Password= sqlservermeu;";
         SqlConnection conn;
         public BD()
@@ -20,7 +21,7 @@ namespace AeroportoBD
         {
             return Conexao;
         }
-
+        #endregion
 
         #region Insert Update Dados
         public void InsertDado(SqlConnection conexaosql, String insert)
@@ -209,43 +210,10 @@ namespace AeroportoBD
             }
             return s;
         } // OK
-        public String Localizar(SqlConnection conexaosql, String selectP) 
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectP, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
-                    Console.WriteLine(">>> Passageiro Localizado <<<");
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-                        s = reader.GetString(0);
-                        Console.Write(" {0} ", reader.GetString(0));
-                        Console.Write(" {0} ", reader.GetString(1));
-                        Console.Write(" {0} ", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write(" {0} ", reader.GetString(3));
-                        Console.Write(" {0} ", reader.GetDateTime(4).ToShortDateString());
-                        Console.Write(" {0} ", reader.GetDateTime(5).ToShortDateString());
-                        Console.WriteLine(" {0} ", reader.GetString(6));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
-                }
-                conexaosql.Close();
-                Console.ReadKey();
-            }
-            catch (SqlException e)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            return s;
-        }
+      
         #endregion
 
-
+     
         #region Aeronave
         public String SelectAeronave(SqlConnection conexaosql, String selectA)
         {
@@ -387,6 +355,8 @@ namespace AeroportoBD
             }
             return s;
         }
+
+       
         #endregion
         #region VOO
 
