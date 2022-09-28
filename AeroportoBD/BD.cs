@@ -29,6 +29,7 @@ namespace AeroportoBD
         {
             try
             {
+               
                 conexaosql.Open();
                 SqlCommand cmdINSERT = new SqlCommand(insert, conn);
                 cmdINSERT.Connection = conexaosql;
@@ -66,7 +67,7 @@ namespace AeroportoBD
             Console.ReadKey();
         } //OK
 
-        public void DeleteDado(SqlConnection conexaosql, String update)
+      public void DeleteDado(SqlConnection conexaosql, String update)
         {
             try
             {
@@ -100,7 +101,7 @@ namespace AeroportoBD
                 using (reader = cmdSELECT.ExecuteReader())
                 {
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS COMPANHIA AEREA <<<");
-                    Console.WriteLine("\nCNPJ  \t\tRazão Social \t\t\t\t\t Data Abertura \t Data Último Voo\tDataCadastro \tSituacao\n");
+                    Console.WriteLine("\nCNPJ  \t\tRazão Social \t\t\t\t\t Data Abertura \t Data Último Voo\tDataCadastro \tSituacao \n");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
@@ -183,8 +184,8 @@ namespace AeroportoBD
                 SqlDataReader reader = null;
                 using (reader = cmdSELECT.ExecuteReader())
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
-                    Console.WriteLine("\nIATA\n");
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AEROPORTO <<<");
+                    Console.WriteLine("\tIATA\n");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
@@ -222,7 +223,7 @@ namespace AeroportoBD
                     while (reader.Read()) // enquanto tiver leitura para fazer,faz
                     {
                         s = reader.GetString(0);
-                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.WriteLine(" {0} ", reader.GetString(0));
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
