@@ -14,7 +14,7 @@ CREATE TABLE Passageiro(
 	CONSTRAINT PK_CPF_Passageiro PRIMARY KEY (CPF)
 );
 
-CREATE TABLE Restritos(
+CREATE TABLE Restrito(
 	CPF varchar(11) not null
 
 	CONSTRAINT PK_CPF_Restrito PRIMARY KEY (CPF)
@@ -30,16 +30,16 @@ CREATE TABLE CompanhiaAerea(
 	CONSTRAINT PK_CNPJ_CompanhiaAerea PRIMARY KEY(CNPJ)
 );
 
-CREATE TABLE Bloqueados(
+CREATE TABLE Bloqueado(
 	CNPJ varchar(14) not null
 
 	CONSTRAINT PK_CNPJ_Bloqueado PRIMARY KEY(CNPJ)
 );
 
-CREATE TABLE Aeoroportos(
+CREATE TABLE Aeoroporto(
 	IATA varchar(3)
 
-	CONSTRAINT PK_IATA_Aeroportos PRIMARY KEY (IATA)
+	CONSTRAINT PK_IATA_Aeroporto PRIMARY KEY (IATA)
 );
 
 CREATE TABLE Aeronave(
@@ -95,5 +95,15 @@ CREATE TABLE VendaPassagem(--ITEM VENDA
 	FOREIGN KEY (IDVENDA) references Venda(IDVENDA),
 );
 
+select * from CompanhiaAerea 
+select * from  Passageiro
+select *  from  Aeronave
+select * from VendaPassagem
+select * from Venda
+select * from Passagem
+select * from Voo
+select * from Aeoroporto
+select * from Bloqueado
+select * from restrito
 
-
+--65084691000102
