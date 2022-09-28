@@ -482,7 +482,7 @@ namespace AeroportoBD
                                                 encontrado = false;
                                                 string buscarestrito = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF='{cpf}'; ";
 
-                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, buscarestrito)))
+                                                if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, buscarestrito)))
                                                 {
 
                                                     encontrado = true;
@@ -649,7 +649,7 @@ namespace AeroportoBD
                                                 encontrado = false;
 
                                                 String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
-                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoCompanhia(conexaosql, localiza)))
+                                                if (!string.IsNullOrEmpty(bd.SelectCompanhiaAerea(conexaosql, localiza)))
                                                 {
                                                     encontrado = true;
                                                 }
@@ -1237,7 +1237,7 @@ namespace AeroportoBD
                     string[] idproibido = new string[] { "SOS", "XXX", "PAN", "TTT", "VFR", "IFR", "VMC", "IMC" };
                     encontrado = false;
                     string idaeronave;
-
+                   
                     do
                     {
                         Console.Write("Informe o código Nacional de identificação da Aeronave: ");
@@ -1267,9 +1267,16 @@ namespace AeroportoBD
                                             if (prefixoaeronave.Contains(prefixoaviao) == true)
                                             {
 
-
-                                                string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
-                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAero)))
+                                                Console.Write("\nBuscando Aeronave . ");
+                                                Thread.Sleep(200);
+                                                Console.Write(" .");
+                                                Thread.Sleep(200);
+                                                Console.Write(" .\n");
+                                                Thread.Sleep(200);
+                                                Console.Write("Por favor, Informe seu CNPJ novamente: ");
+                                                string cnpj = ValidarEntrada("cnpjexiste");
+                                                string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}'AND CNPJ='{cnpj};";
+                                                if (!string.IsNullOrEmpty(bd.SelectAeronave(conexaosql, BuscaAero)))
                                                 {
                                                     encontrado = true;
                                                     break;
@@ -1470,7 +1477,7 @@ namespace AeroportoBD
                         {
                             string iata = Console.ReadLine().ToUpper();
                             string SelectAeroporto = $"SELECT IATA FROM Aeroporto WHERE IATA='{iata}';";
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, SelectAeroporto)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, SelectAeroporto)))
                             {
                                 encontrado = true;
                             }
@@ -1512,7 +1519,7 @@ namespace AeroportoBD
                         {
                             idaeronave = Console.ReadLine().ToUpper();
                             string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAero)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, BuscaAero)))
                             {
                                 encontrado = true;
                                 break;
@@ -1564,7 +1571,7 @@ namespace AeroportoBD
                             idaeronave = Console.ReadLine().ToUpper();
                             string BuscaAeronave = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
 
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAeronave)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, BuscaAeronave)))
                             {
                                 encontrado = true;
                                 break;
@@ -1643,7 +1650,7 @@ namespace AeroportoBD
                             encontrado = false;
                             string buscarestrito = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF='{cpf}'; ";
 
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, buscarestrito)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, buscarestrito)))
                             {
                                 if (p.Situacao == 'A')
                                 {
@@ -1725,7 +1732,7 @@ namespace AeroportoBD
                             encontrado = false;
                             string localiza = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}'); ";
 
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, localiza)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, localiza)))
                             {
                                 encontrado = true;
                             }
@@ -1852,7 +1859,7 @@ namespace AeroportoBD
                             string cnpj = Console.ReadLine();
 
                             String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoCompanhia(conexaosql, localiza)))
+                            if (!string.IsNullOrEmpty(bd.SelectCompanhiaAerea(conexaosql, localiza)))
                             {
                                 encontrado = true;
                             }
@@ -2401,6 +2408,8 @@ namespace AeroportoBD
             Console.Clear();
             cnpj = ValidarEntrada("cnpjexiste");
             if (cnpj == null) TelaInicialCompanhiasAereas();
+            Console.ReadKey();
+            Console.Clear();
             Console.WriteLine("Login efetuado com sucesso! ");
             Pausa();
 
@@ -2529,7 +2538,7 @@ namespace AeroportoBD
                         Console.WriteLine("Confirmação de seu CNPJ ");
                         string cnpj = ValidarEntrada("cnpjexiste");
                         String selectComp = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
-                        bd.SelectUmDadoCompanhia(conexaosql, selectComp);
+                        bd.SelectCompanhiaAerea(conexaosql, selectComp);
                         break;
                     case 7:
                         CadastrarAeroporto();
@@ -2641,14 +2650,14 @@ namespace AeroportoBD
             if (quero == 1)
             {
                 String selectPassageiro = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.SelectUmDadoPassageiro(conexaosql, selectPassageiro);
+                bd.SelectPassageiro(conexaosql, selectPassageiro);
                 TelaEditarPassageiro(passageiroAtivo);
 
             }
             else if (quero == 2)
             {
                 String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.SelectUmDadoPassageiro(conexaosql, selectP);
+                bd.SelectPassageiro(conexaosql, selectP);
                 Pausa();
             }
             else
@@ -2905,7 +2914,10 @@ namespace AeroportoBD
             char situacao;
             Aeronave novaAeronave;
 
-            idAeronave = ValidarEntrada("idaeronave");
+            Console.WriteLine("Confirmação de seu CNPJ  ");
+            string cnpj = ValidarEntrada("cnpjexiste");
+
+          idAeronave = ValidarEntrada("idaeronave");
             if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
             capacidade = int.Parse(ValidarEntrada("capacidade"));
@@ -2913,11 +2925,11 @@ namespace AeroportoBD
 
             situacao = char.Parse(ValidarEntrada("situacao"));
             if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
-
-            novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, compAtivo.Cnpj);
-            listAeronaves.Add(novaAeronave);
-
-            string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,DataUltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{compAtivo.Cnpj}');";
+          
+            Console.ReadKey();
+            novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, cnpj);
+        
+            string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,UltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{novaAeronave.Cnpj}');";
             bd = new BD();
             bd.InsertDado(conexaosql, insert);
             Console.WriteLine("\nCadastro Realizado com Sucesso!");
