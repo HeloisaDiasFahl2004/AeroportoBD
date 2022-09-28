@@ -478,24 +478,24 @@ namespace AeroportoBD
                                             //Verifica se o segundo digito digitado é igual ao que era pra ser:
                                             if (digito2 == int.Parse(letras[10].ToString()))
                                             {
-                                                //Se digitos validados, procura na lista de cadastro se já existe o cpf cadastrado:
+
                                                 encontrado = false;
-                                                foreach (var passageiro in listPassageiro)
+                                                string buscarestrito = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF='{cpf}'; ";
+
+                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, buscarestrito)))
                                                 {
-                                                    //Se achar na lista não deixa prosseguir
-                                                    if (passageiro.Cpf == cpf)
-                                                    {
-                                                        //Se encontrar na lista, invalida o cadastro
-                                                        encontrado = true;
-                                                        Console.WriteLine("CPF já cadastrado!");
-                                                        retornar = PausaMensagem();
-                                                        break; //Quando encontrar um cpf igual na lista, quebra o foreach
-                                                    }
-                                                    else
-                                                        encontrado = false; //Mantem encontrado como false enquanto não achar na lista
+
+                                                    encontrado = true;
+                                                }
+                                                if (encontrado == true)
+                                                {
+                                                    Console.WriteLine("CPF já cadastrado!");
+                                                    retornar = PausaMensagem();
+                                                    break;
                                                 }
 
-                                                //Ao fim da procura, se não possuir o cpf na lista, encontrado = false e retorna o cpf cadastrado:
+
+                                                //Ao fim da procura, se não possuir o cpf no banco, encontrado = false e retorna o cpf cadastrado:
                                                 if (encontrado == false)
                                                     //////////RETORNA O CPF
                                                     return cpf;
@@ -647,31 +647,24 @@ namespace AeroportoBD
                                             {
                                                 //Se digitos validados, procura na lista de cadastro se já existe o cnpj cadastrado:
                                                 encontrado = false;
-                                                foreach (var companhia in listCompanhia)
+
+                                                String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
+                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoCompanhia(conexaosql, localiza)))
                                                 {
-                                                    //Se achar na lista não deixa prosseguir
-                                                    if (companhia.Cnpj == cnpj)
-                                                    {
-                                                        //Se encontrar na lista, invalida o cadastro
-                                                        encontrado = true;
-                                                        Console.WriteLine("CNPJ já cadastrado!");
-                                                        retornar = PausaMensagem();
-                                                        break; //Quando encontrar um cnpj igual na lista, quebra o foreach
-                                                    }
-                                                    else
-                                                        encontrado = false; //Mantem encontrado como false enquanto não achar na lista
+                                                    encontrado = true;
                                                 }
 
-                                                //Ao fim da procura, se não possuir o cnpj na lista, encontrado = false e retorna o cnpj cadastrado:
-                                                if (encontrado == false)
-                                                    //////////RETORNA O CNPJ
-                                                    return cnpj;
+                                                if (encontrado == true)
+                                                {
+                                                    Console.WriteLine("CNPJ já cadastrado!");
+                                                    retornar = PausaMensagem();
+                                                    break;
+                                                }
+                                                else
+                                                    encontrado = false;
                                             }
-                                            else
-                                            {
-                                                Console.WriteLine("Esse não é um CNPJ válido!");
-                                                retornar = PausaMensagem();
-                                            }
+                                            if (encontrado == false)
+                                                return cnpj;
                                         }
                                         else
                                         {
@@ -681,19 +674,19 @@ namespace AeroportoBD
                                     }
                                     else
                                     {
-                                        Console.WriteLine("CNPJ com números sequenciais iguais não é válido!");
+                                        Console.WriteLine("Esse não é um CNPJ válido!");
                                         retornar = PausaMensagem();
                                     }
                                 }
                                 else
                                 {
-
-                                    Console.WriteLine("Só aceita números válidos de 14 digitos");
+                                    Console.WriteLine("CNPJ com números sequenciais iguais não é válido!");
                                     retornar = PausaMensagem();
                                 }
                             }
                             else
                             {
+
                                 Console.WriteLine("Só aceita números válidos de 14 digitos");
                                 retornar = PausaMensagem();
                             }
@@ -1031,9 +1024,9 @@ namespace AeroportoBD
                                     else
                                     {
                                         Console.Clear();
-                                        Console.ForegroundColor = ConsoleColor.Red;
+
                                         Console.WriteLine("\nO Aeroporto não aceita cadastrar companhia aérea com menos de 6 meses de existência.");
-                                        Console.ForegroundColor = ConsoleColor.White;
+
                                         Console.WriteLine("\nVocê será redirecionado para o menu anterior.");
                                         Pausa();
 
@@ -1273,19 +1266,14 @@ namespace AeroportoBD
                                             //Verifica se os 2 primeiros prefixos são válidos:
                                             if (prefixoaeronave.Contains(prefixoaviao) == true)
                                             {
-                                                foreach (var aeronave in listAeronaves)
-                                                {
-                                                    if (aeronave.Inscricao == idaeronave)
-                                                    {
-                                                        encontrado = true;
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        encontrado = false;
-                                                    }
-                                                }
 
+
+                                                string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
+                                                if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAero)))
+                                                {
+                                                    encontrado = true;
+                                                    break;
+                                                }
                                                 if (encontrado == false)
                                                 {
                                                     return idaeronave;
@@ -1476,13 +1464,18 @@ namespace AeroportoBD
                     do
                     {
                         retornar = false;
-
+                        encontrado = false;
                         Console.Write("Informe o código IATA do aeroporto de destino: ");
                         try
                         {
                             string iata = Console.ReadLine().ToUpper();
+                            string SelectAeroporto = $"SELECT IATA FROM Aeroporto WHERE IATA='{iata}';";
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, SelectAeroporto)))
+                            {
+                                encontrado = true;
+                            }
 
-                            if (listDestino.Contains(iata))
+                            if (encontrado == true)
                             {
                                 return iata;
                             }
@@ -1518,20 +1511,13 @@ namespace AeroportoBD
                         try
                         {
                             idaeronave = Console.ReadLine().ToUpper();
-
-                            foreach (var aeronave in listAeronaves)
+                            string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAero)))
                             {
-                                if (aeronave.Inscricao == idaeronave)
-                                {
-                                    a = aeronave;
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                                encontrado = true;
+                                break;
                             }
+
                             if (encontrado == true)
                             {
                                 if (a.Situacao == 'A')
@@ -1565,31 +1551,23 @@ namespace AeroportoBD
 
 
                 case "aeronaveeditar":
-
+                    //OK
                     #region AeronaveEditar
                     encontrado = false;
                     do
                     {
                         retornar = false;
-                        Aeronave a = null;
 
                         Console.Write("Informe o código Nacional de identificação da Aeronave: ");
                         try
                         {
                             idaeronave = Console.ReadLine().ToUpper();
+                            string BuscaAeronave = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}';";
 
-                            foreach (var aeronave in listAeronaves)
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, BuscaAeronave)))
                             {
-                                if (aeronave.Inscricao == idaeronave)
-                                {
-                                    a = aeronave;
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                                encontrado = true;
+                                break;
                             }
                             if (encontrado == true)
                             {
@@ -1647,7 +1625,7 @@ namespace AeroportoBD
                 #endregion
 
                 case "cpflogin": //na hora da venda
-
+                    //OK
                     #region CpflLogin
 
                     do
@@ -1655,49 +1633,35 @@ namespace AeroportoBD
                         retornar = false;
 
                         Console.Write("Informe o CPF para prosseguir: ");
+
+
                         try
                         {
                             string cpf = Console.ReadLine();
 
-                            //Retira o passageiro escolhido da lista de passageiros:
                             Passageiro p = null;
                             encontrado = false;
-                            foreach (var passageiro in listPassageiro)
+                            string buscarestrito = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF='{cpf}'; ";
+
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, buscarestrito)))
                             {
-                                if (passageiro.Cpf == cpf)
-                                {
-                                    p = passageiro;
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
-                            }
-                            if (encontrado == true)
-                            {
-                                //Se situação estivar ativa, continua
                                 if (p.Situacao == 'A')
                                 {
                                     //Verifica se é maior de idade:
                                     if (DateTime.Compare(p.DataNascimento, System.DateTime.Now.AddYears(-18)) <= 0)
                                     {
                                         encontrado = false;
-                                        //Procura na lista de restritos:
-                                        foreach (var restrito in listRestritos)
+                                        string buscaRestrito = $"SELECT CPF FROM Restritos WHERE CPF=('{cpf}');";
+
+                                        if (!string.IsNullOrEmpty(bd.SelectRestrito(conexaosql, buscaRestrito)))// tá restrito
                                         {
-                                            if (p.Cpf == restrito)
-                                            {
-                                                encontrado = true;
-                                                break;
-                                            }
-                                            else
-                                            {
-                                                encontrado = false;
-                                            }
+                                            encontrado = true;
+                                            break;
                                         }
-                                        //Se não estiver na lista de restritos, retorna o cpf.
+                                        else
+                                        {
+                                            encontrado = false;
+                                        }
                                         if (encontrado == false)
                                         {
                                             return cpf;
@@ -1707,6 +1671,7 @@ namespace AeroportoBD
                                             Console.WriteLine("Impossível prosseguir! Esse Passageiro se encontra restrito!");
                                             retornar = PausaMensagem();
                                         }
+
                                     }
                                     else
                                     {
@@ -1733,6 +1698,9 @@ namespace AeroportoBD
                         }
                     } while (retornar == false);
 
+
+
+
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
 
@@ -1754,15 +1722,14 @@ namespace AeroportoBD
                         {
                             string cpf = Console.ReadLine();
 
-                            //Consulta o cpf do passageiro escolhido da lista de passageiros:
                             encontrado = false;
                             string localiza = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}'); ";
-                           
-                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, localiza))) 
-                            { 
+
+                            if (!string.IsNullOrEmpty(bd.SelectUmDadoPassageiro(conexaosql, localiza)))
+                            {
                                 encontrado = true;
                             }
-                       
+
                             if (encontrado == true)
                             {
                                 return cpf;
@@ -1786,31 +1753,24 @@ namespace AeroportoBD
                 #endregion
 
                 case "idvoo":
-
+                    //OK
                     #region IDVoo
 
                     do
                     {
-                        retornar = false;
 
+                        encontrado = false;
+                        retornar = false;
                         Console.Write("Informe o ID do Voo para prosseguir: ");
                         try
                         {
                             string idvoo = Console.ReadLine().ToUpper();
 
-                            //Consulta o id do voo escolhido da lista de voos:
                             encontrado = false;
-                            foreach (var voo in listVoo)
+                            string selectIdVOO = $"SELECT INSCRICAO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo WHERE IDVOO='{idvoo}'";
+                            if (!string.IsNullOrEmpty(bd.SelectVoo(conexaosql, selectIdVOO)))
                             {
-                                if (voo.IDVoo == idvoo)
-                                {
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                                encontrado = true;
                             }
 
                             if (encontrado == true)
@@ -1819,7 +1779,7 @@ namespace AeroportoBD
                             }
                             else
                             {
-                                Console.WriteLine("ID do Voo não encontrado! Insira um código válido!");
+                                Console.WriteLine("Código não encontrado! Insira um ID Voo válido!");
                                 retornar = PausaMensagem();
                             }
                         }
@@ -1838,7 +1798,7 @@ namespace AeroportoBD
 
 
                 case "idvenda":
-
+                    //OK
                     #region idvenda
 
                     do
@@ -1850,18 +1810,10 @@ namespace AeroportoBD
                         try
                         {
                             string idvenda = Console.ReadLine().ToUpper();
-
-                            foreach (var venda in listVenda)
+                            string selectIdVENDA = $"SELECT  IDVenda,DataVenda,ValorTotal,CPF FROM Venda WHERE id='{idvenda}'";
+                            if (!string.IsNullOrEmpty(bd.SelectVenda(conexaosql, selectIdVENDA)))
                             {
-                                if (venda.IDVenda == idvenda)
-                                {
-                                    encontrado = true;
-                                    break;
-                                }
-                                else
-                                {
-                                    encontrado = false;
-                                }
+                                encontrado = true;
                             }
 
                             if (encontrado == true)
@@ -1887,19 +1839,19 @@ namespace AeroportoBD
                 #endregion
 
                 case "cnpjexiste":
-
-                    #region cnpjogin
+                    //OK
+                    #region cnplogin
                     do
                     {
                         retornar = false;
                         encontrado = false;
-                        CompanhiaAerea c = null;
+
                         Console.Write("Informe o CNPJ para prosseguir: ");
                         try
                         {
                             string cnpj = Console.ReadLine();
 
-                           String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
+                            String localiza = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
                             if (!string.IsNullOrEmpty(bd.SelectUmDadoCompanhia(conexaosql, localiza)))
                             {
                                 encontrado = true;
@@ -1923,7 +1875,7 @@ namespace AeroportoBD
                     } while (retornar == false);
                     //Retorna nulo se o usuário quiser cancelar no meio do cadastro;
                     return null;
-                #endregion
+                #endregion //OK
 
                 default:
                     return null;
@@ -1986,7 +1938,6 @@ namespace AeroportoBD
 
         #endregion
 
-
         #region MENU INICIAL
         static void TelaInicial()
         {
@@ -2030,16 +1981,16 @@ namespace AeroportoBD
 
                     case 3:
 
-                        //   TelaVendas();
+                          TelaVendas();
 
                         break;
 
                     case 4:
-                        //   TelaInicialCpfRestritos();
+                        TelaInicialCpfRestritos();
                         break;
 
                     case 5:
-                        //    TelaInicialCnpjRestritos();
+                          TelaInicialCnpjRestritos();
                         break;
 
                     case 6:
@@ -2070,7 +2021,6 @@ namespace AeroportoBD
 
         }
         #endregion
-
 
         #region  VENDAS
         static void TelaVendas()
@@ -2106,10 +2056,10 @@ namespace AeroportoBD
                     TelaVoosDisponiveis(passageiroAtivo);
                     break;
                 case 2:
-                    //   TelaHistoricoVendas();
+                       TelaHistoricoVendas();
                     break;
                 case 3:
-                    //   TelaHistoricoReservadas();
+                       TelaHistoricoReservadas();
                     break;
             }
         }
@@ -2440,8 +2390,7 @@ namespace AeroportoBD
 
         #endregion
 
-
-        // Login/Cadastrar/Opções/Editar  -- LOGIN ERRO
+        // Login/Cadastrar/Opções/Editar 
         #region Companhia Aérea Opções
         static void TelaLoginCompanhiaAerea()
         {
@@ -2459,7 +2408,7 @@ namespace AeroportoBD
 
 
 
-        } // ERRO
+        } // ok
         static void TelaCadastrarCompanhiaAerea()
         {
             string nomeComp;
@@ -2499,6 +2448,8 @@ namespace AeroportoBD
                 Console.WriteLine(" 4 - Ativar/Inativar Aeronave\n"); // update aeronave situacao = A/I -- OK
                 Console.WriteLine(" 5 - Editar dados da Companhia Aerea\n"); // update Companhia Aerea  -- OK
                 Console.WriteLine(" 6 - Vizualizar dados da Companhia Aerea\n");// OK
+                Console.WriteLine(" 7 - Cadastrar Aeroporto Destino\n");// OK
+                Console.WriteLine(" 8 - Ver Aeroportos Cadastrados\n");// OK
 
                 Console.WriteLine("\n 0 - Encerrar Sessão\n");
                 opc = int.Parse(ValidarEntrada("menu"));
@@ -2527,7 +2478,7 @@ namespace AeroportoBD
 
                     case 3:
                         string selectVoo = $"SELECT INSCRICAO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo";
-                     //   bd.SelectVoo(conexaosql, selectVoo);
+                         bd.SelectVoo(conexaosql, selectVoo);
 
                         Console.WriteLine("\n----------------------------------------------------------------------------------------------");
                         Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
@@ -2580,9 +2531,16 @@ namespace AeroportoBD
                         String selectComp = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
                         bd.SelectUmDadoCompanhia(conexaosql, selectComp);
                         break;
-                    default:
-                        Console.WriteLine("Opção Inválida!");
+                    case 7:
+                        CadastrarAeroporto();
                         break;
+                    case 8:
+                        
+                        string iata = ValidarEntrada("destino");
+
+
+                        break;
+
                 }
 
 
@@ -2666,7 +2624,7 @@ namespace AeroportoBD
         } // OK
         #endregion
 
-        //Login/Cadastrar/Editar -- LOGIN ERRO
+        //Login/Cadastrar/Editar 
         #region Passageiro Opções
         static void TelaLoginPassageiro()
         {
@@ -2719,8 +2677,7 @@ namespace AeroportoBD
 
 
                 Passageiro novoPassageiro = new Passageiro(cpf, nome, DateConverter(dataNascimento), sexo, System.DateTime.Now, System.DateTime.Now, 'A');
-                listPassageiro.Add(novoPassageiro);
-                //  GravarPassageiro();
+
                 string insert = $"INSERT INTO Passageiro(CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao) VALUES('{novoPassageiro.Cpf}'," + $"'{novoPassageiro.Nome}','{novoPassageiro.DataNascimento}','{novoPassageiro.Sexo}','{novoPassageiro.DataUltimaCompra}','{novoPassageiro.DataCadastro}','{novoPassageiro.Situacao}');";
                 bd = new BD();
                 bd.InsertDado(conexaosql, insert);
@@ -2896,7 +2853,6 @@ namespace AeroportoBD
         }
         #endregion
 
-
         #region MENU PASSAGEIRO
         static void TelaInicialPassageiros()
         {
@@ -2998,7 +2954,143 @@ namespace AeroportoBD
             Pausa();
             TelaOpcoesCompanhiaAerea(compAtivo);
         } // OK
-        #endregion 
+        #endregion
+
+        #region Aeroporto
+        static void CadastrarAeroporto()
+        {
+            string iata = ValidarEntrada("destino");
+            if (iata == null) TelaInicialCompanhiasAereas();
+            Aeroporto aeroporto = new Aeroporto(iata);
+            string insert = $"INSERT INTO Aeroporto(IATA) VALUES('{iata}');";
+            bd = new BD();
+            bd.InsertDado(conexaosql, insert);
+            Console.WriteLine("\nAeroporto Cadastrado com Sucesso!");
+            Pausa();
+            TelaInicialCompanhiasAereas();
+        }
+        #endregion
+
+        #region Exceções
+        static void TelaInicialCpfRestritos()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\n'CPF' RESTRITOS");
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Ver a Lista de 'CPF' Restritos\n");
+                Console.WriteLine(" 2 - Adicionar um 'CPF' à Lista de Restritos\n");
+                Console.WriteLine(" 3 - Remover um 'CPF' da Lista de Restritos\n");
+                Console.WriteLine("\n 0 - Sair\n");
+
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+
+                        TelaInicial();
+
+                        break;
+
+                    case 1:
+                        string verRestrito = "SELECT * FROM Restrito"; //só tem cpf em restrito
+                        bd.SelectRestrito(conexaosql, verRestrito);
+                        Pausa();
+                        break;
+                    case 2:
+                        Console.WriteLine("Só é possível adicionar na lista de restritos um CPF cadastrado no sistema!\n");
+                        Pausa();
+                        string adcCpf = ValidarEntrada("cpfexiste");
+                        if (adcCpf == null) TelaInicialCpfRestritos();
+                        string adcRestrito = $"INSERT INTO Restrito(CPF) VALUES('{adcCpf}');";
+                        bd.InsertDado(conexaosql, adcRestrito);
+                        Console.Clear();
+                        Console.WriteLine("Cpf adiconado com sucesso");
+                        Pausa();
+                        TelaInicialCpfRestritos();
+                        break;
+
+                    case 3:
+                        Console.Write("Informe o CPF que deseja excluir: ");
+                        string cpf = ValidarEntrada("cpfexiste");
+                        if (cpf == null) TelaInicialCpfRestritos();
+                        string removeRestrito = $"DELETE FROM Restrito(CPF) WHERE CPF='{cpf}');";
+                        bd.DeleteDado(conexaosql, removeRestrito);
+
+                        Console.Clear();
+                        Console.WriteLine("Cpf Removido com sucesso!");
+                        Pausa();
+                        TelaInicialCpfRestritos();
+
+                        break;
+                }
+
+            } while (true);
+        }
+        static void TelaInicialCnpjRestritos()
+        {
+            int opc = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\n'CNPJ' RESTRITOS");
+                Console.WriteLine("\nInforme a Opção Desejada:\n");
+                Console.WriteLine(" 1 - Ver a Lista de 'CNPJ' Bloqueados\n");
+                Console.WriteLine(" 2 - Adicionar um 'CNPJ' à Lista de Bloqueados\n");
+                Console.WriteLine(" 3 - Remover um 'CNPJ' da Lista de Bloqueados\n");
+                Console.WriteLine("\n 0 - Sair\n");
+
+                opc = int.Parse(ValidarEntrada("menu"));
+                Console.Clear();
+
+                switch (opc)
+                {
+                    case 0:
+
+                        TelaInicial();
+                        break;
+
+                    case 1:
+                        string verBloqueado = "SELECT * FROM Bloqueado"; //só tem cpf em restrito
+                        bd.SelectBloqueado(conexaosql, verBloqueado);
+                        Pausa();
+                        break;
+
+                    case 2:
+                        Console.WriteLine("Só é possível adicionar na lista de restritos um CNPJ cadastrado no sistema!\n");
+                        Pausa();
+                        string adcCnpj = ValidarEntrada("cnpjexiste");
+                        if (adcCnpj == null) TelaInicialCpfRestritos();
+                        string adcBloq = $"INSERT INTO Bloqueado(CNPJ) VALUES('{adcCnpj}');";
+                        bd.InsertDado(conexaosql, adcBloq);
+                        Console.Clear();
+                        Console.WriteLine("Cnpj adiconado com sucesso");
+                        Pausa();
+                        TelaInicialCpfRestritos();
+                        break;
+                    case 3:
+                        Console.Write("Informe o CNPJ que deseja excluir: ");
+                        string cnpj = ValidarEntrada("cnpjexiste");
+                        if (cnpj == null) TelaInicialCpfRestritos();
+                        string removeBloq = $"DELETE FROM Bloqueado(CNPJ) WHERE CNPJ='{cnpj}');";
+                        bd.DeleteDado(conexaosql, removeBloq);
+
+                        Console.Clear();
+                        Console.WriteLine("Cnpj Removido com sucesso!");
+                        Pausa();
+                        TelaInicialCpfRestritos();
+                        break;
+                }
+
+            } while (true);
+        }
+
+        #endregion
+
         static void Main(string[] args)
         {
             TelaInicial();
