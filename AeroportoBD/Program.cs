@@ -14,87 +14,17 @@ namespace AeroportoBD
         #region Declarações
         static BD bd = new BD();
 
-        // BD bd = new BD();
+
         static SqlConnection conexaosql = new SqlConnection(bd.Caminho());
 
         static CompanhiaAerea c = new CompanhiaAerea();//Pra poder chamar seus métodos
+        static Passageiro p = new Passageiro();
 
-        static List<Passageiro> listPassageiro = new List<Passageiro>();
-        static List<CompanhiaAerea> listCompanhia = new List<CompanhiaAerea>();
-        static List<Aeronave> listAeronaves = new List<Aeronave>();
-        static List<string> voosrealizados = new List<string>();
-        static List<Voo> listVoo = new List<Voo>();
-        static List<Passagem> listPassagem = new List<Passagem>();
-        static List<Venda> listVenda = new List<Venda>();
-        static List<VendaPassagem> listItemVenda = new List<VendaPassagem>();
-        static List<string> listRestritos = new List<string>();// classe pra cadastrar
-        static List<string> listBloqueados = new List<string>();// classe pra cadastrar
-        static List<string> listDestino = new List<string>();// iata-classe pra cadastrar 
+     
+
         #endregion
 
-        #region Atualizar Passagens e Voos
-        static void Atualizar()
-        {
-            try
-            {
-                //Exclui voos já realizados
-                for (int j = 0; j < listVoo.Count; j++)
-                {
-                    if (DateTime.Compare(listVoo[j].DataVoo, System.DateTime.Now) < 0)
-                    {
-                        for (int i = 0; i < listPassagem.Count; i++)
-                        {
-                            if (listPassagem[i].IDVoo == listVoo[j].IDVoo)
-                            {
-                                if (listPassagem.Count > 1)
-                                {
-                                    Passagem aux = listPassagem[i + 1];
-                                    listPassagem.Remove(listPassagem[i]);
-                                    listPassagem[i] = aux;
-                                    i--;
-                                }
-                                else
-                                {
-                                    listPassagem.Remove(listPassagem[i]);
-                                }
-                            }
-                        }
-
-                        voosrealizados.Add(listVoo[j].DadosVooRealizado());
-                        //  GravarVooRealizado(); insert
-
-                        if (listVoo.Count > 1)
-                        {
-                            Voo auxi = listVoo[j + 1];
-                            listVoo.Remove(listVoo[j]);
-                            listVoo[j] = auxi;
-                            j--;
-                        }
-                        else
-                        {
-                            listVoo.Remove(listVoo[j]);
-                        }
-                    }
-                }
-
-                //Altera as passagens reservadas para livres em 2 dias após a compra
-                foreach (var passagem in listPassagem)
-                {
-                    if (passagem.Situacao == 'R' && DateTime.Compare(passagem.DataUltimaOperacao.AddDays(2), System.DateTime.Now) < 0)
-                    {
-                        passagem.Situacao = 'L';
-                    }
-                }
-                //  GravarVoo(); insert
-                //  GravarPassagem(); insert
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("ERRO de arquivo! Não foi possível atualizar os voos e passagens!");
-                Pausa();
-            }
-        }
-        #endregion
+     
 
         #region DataConversão
         static public DateTime DateConverter(string data)
@@ -156,13 +86,13 @@ namespace AeroportoBD
         #endregion
 
         #region GerarIDPASSAGEM
-        static List<string> GeradorIdPassagens(int capacidadeassentos)
+        static string GeradorIdPassagens(int capacidadeassentos)
         {
             try
             {
                 Random random = new Random();
-                List<string> listaId = new List<string>();
-                string id;
+
+                string id = "";
                 bool encontrado;
 
                 for (int i = 0; i < capacidadeassentos; i++)
@@ -171,19 +101,24 @@ namespace AeroportoBD
 
                     id = random.Next(1001, 9999).ToString();
 
-                    foreach (var idnalista in listaId)
+
+
+                    if (!string.IsNullOrEmpty(bd.SelectPassagem(conexaosql, id)))
                     {
-                        if (idnalista == id)
-                        {
-                            encontrado = true;
-                            i--;
-                            break;
-                        }
+                        encontrado = true;
+                        i--;
+                        break;
                     }
+
                     if (encontrado == false)
-                        listaId.Add("PA" + id.ToString());
+                    {
+                        string adcPassagem = $"INSERT INTO Passagem IDPASSAGEM='{'P' + 'A' + id}'";
+                        bd.InsertDado(conexaosql, adcPassagem);
+                        return id;
+                    }
+
                 }
-                return listaId;
+                return id;
             }
             catch (Exception)
             {
@@ -212,25 +147,20 @@ namespace AeroportoBD
                         {
                             encontrado = false;
                             idvoogerado = ("V" + random.Next(1000, 9999).ToString());
+                            string BuscarVoo = $"SELECT * FROM VOO WHERE IDVOO='{idvoogerado}";
 
-                            foreach (var voo in listVoo)
+                            if (!string.IsNullOrEmpty(bd.SelectPassagem(conexaosql, idvoogerado)))
                             {
-                                if (voo.IDVoo == idvoogerado)
-                                {
-                                    encontrado = true;
-                                    break;
-                                }
+                                encontrado = true;
+                                break;
                             }
-
-                            if (listVoo.Count <= 8999)
-                            {
                                 if (encontrado == false)
                                     return idvoogerado;
-                            }
+                            
                             else
                             {
                                 Console.Clear();
-                                Console.WriteLine("Erro, não foi possível gerar ID do Voo! Lista de vendas está cheia");
+                                Console.WriteLine("Erro, não foi possível gerar ID do Voo! Banco de vendas está cheio");
                                 Pausa();
                                 return null;
                             }
@@ -253,7 +183,7 @@ namespace AeroportoBD
 
                     try
                     {
-                        string idvenda = (listVenda.Count + 1).ToString();
+                        string idvenda = $"SELECT * FROM Venda";
                         if (idvenda.Length == 1) return ("0000" + idvenda);
                         else if (idvenda.Length == 2) return ("000" + idvenda);
                         else if (idvenda.Length == 3) return ("00" + idvenda);
@@ -283,7 +213,7 @@ namespace AeroportoBD
                     #region IDItemVenda
                     try
                     {
-                        string idvenda = (listVenda.Count + 1).ToString();
+                        string idvenda = $"SELECT * FROM VendaPassagem";
                         if (idvenda.Length == 1) return ("0000" + idvenda);
                         else if (idvenda.Length == 2) return ("000" + idvenda);
                         else if (idvenda.Length == 3) return ("00" + idvenda);
@@ -1237,7 +1167,7 @@ namespace AeroportoBD
                     string[] idproibido = new string[] { "SOS", "XXX", "PAN", "TTT", "VFR", "IFR", "VMC", "IMC" };
                     encontrado = false;
                     string idaeronave;
-                   
+
                     do
                     {
                         Console.Write("Informe o código Nacional de identificação da Aeronave: ");
@@ -1960,8 +1890,8 @@ namespace AeroportoBD
                 Console.WriteLine(" 4 - Acesso a Lista de CPF Restritos\n");
                 Console.WriteLine(" 5 - Acesso a Lista de CNPJ Restritos\n");
                 Console.WriteLine(" 6 - Aeronaves\n"); // OK
-                Console.WriteLine(" 7 - Voos Realizados\n");
-                Console.WriteLine(" 8 - Voos Disponíveis");
+           
+                Console.WriteLine(" 7 - Voos Disponíveis");
                 Console.WriteLine("\n 0 - Encerrar Sessão\n");
                 opc = int.Parse(ValidarEntrada("menu"));
                 Console.Clear();
@@ -1988,7 +1918,7 @@ namespace AeroportoBD
 
                     case 3:
 
-                          TelaVendas();
+                        TelaVendas();
 
                         break;
 
@@ -1997,29 +1927,14 @@ namespace AeroportoBD
                         break;
 
                     case 5:
-                          TelaInicialCnpjRestritos();
+                        TelaInicialCnpjRestritos();
                         break;
 
                     case 6:
                         TelaVerAeronavesCadastradas();
                         break;
-
                     case 7:
-                        foreach (var voorealizado in voosrealizados)
-                        {
-                            Console.WriteLine(voorealizado);
-                        }
-                        Pausa();
-                        break;
-
-                    case 8:
-                        foreach (var Voo in listVoo)
-                        {
-                            if (Voo.Situacao == 'A')
-                            {
-                                Console.WriteLine("IDVoo: " + Voo.IDVoo + " Destino: " + Voo.Destino + " Data e Hora do Voo: " + Voo.DataVoo.ToString("dd/MM/yyyy HH:mm"));
-                            }
-                        }
+                        TelaVoosDisponiveis();
                         Pausa();
                         break;
                 }
@@ -2050,23 +1965,17 @@ namespace AeroportoBD
                 case 1:
                     string cpfLogin = ValidarEntrada("cpflogin");
                     if (cpfLogin == null) TelaInicial();
-                    Passageiro passageiroAtivo = null;
-                    foreach (var passageiro in listPassageiro)
-                    {
-                        if (passageiro.Cpf == cpfLogin)
-                        {
-                            passageiroAtivo = passageiro;
-                            break;
-                        }
-                    }
+                    string loginPassageiro = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpfLogin}');";
+                    bd.SelectPassageiro(conexaosql, loginPassageiro);
+
                     Console.Clear();
-                    TelaVoosDisponiveis(passageiroAtivo);
+                    TelaVoosDisponiveis();
                     break;
                 case 2:
-                       TelaHistoricoVendas();
+                    TelaHistoricoVendas();
                     break;
                 case 3:
-                       TelaHistoricoReservadas();
+                    TelaHistoricoReservadas();
                     break;
             }
         }
@@ -2115,7 +2024,7 @@ namespace AeroportoBD
         {
 
             string selectReserva = $"SELECT IDPASSAGEM,IDVOO,DataUltimaOperacao ,ValorUnitario,Situacao FROM Passagem WHERE Situacao='{'R'}'";
-            bd.SelectReserva(conexaosql, selectReserva);
+            bd.SelectPassagem(conexaosql, selectReserva);
 
             Pausa();
             TelaVendas();
@@ -2135,7 +2044,8 @@ namespace AeroportoBD
             string auxData;
             DateTime dataVoo;
             float valor;
-
+            Aeronave a = null;
+            string cnpj = ValidarEntrada("cnpjexiste");
             if (compAtivo.Situacao == 'A')
             {
                 destino = ValidarEntrada("destino");
@@ -2156,26 +2066,19 @@ namespace AeroportoBD
                 if (idVoo == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
                 Voo novoVoo = new Voo(idVoo, destino, dataVoo, System.DateTime.Now, 0, 'A');
-                listVoo.Add(novoVoo);
-                // GravarVoo();
+
                 string insertVOO = $"INSERT INTO VOO(IDVOO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao) VALUES('{idVoo}'," + $"'{destino}','{dataVoo}','{novoVoo.DataCadastro}','{novoVoo.QuantidadeAssentosOcupados}','{novoVoo.Situacao}');";
                 bd.InsertDado(conexaosql, insertVOO);
-                Aeronave a = null;
-                foreach (var aeronave in listAeronaves)
-                {
-                    if (aeronave.Inscricao == idAeronave)
-                    {
-                        a = aeronave;
-                        break;
-                    }
-                }
-                //Gerador de passagens
-                List<string> idsPassagem = GeradorIdPassagens(a.Capacidade);
+
+                string buscaVoo = $"SELECT * FROM VOO WHERE IDVOO ='{idVoo}'  AND INSCRICAO='{idAeronave}'";
+                bd.SelectVoo(conexaosql,buscaVoo);
+                string idsPassagem = GeradorIdPassagens(a.Capacidade);
+               
                 for (int i = 0; i < a.Capacidade; i++)
                 {
-                    Passagem passagem = new Passagem(idsPassagem[i], idVoo, System.DateTime.Now, valor, 'L');
-                    listPassagem.Add(passagem);
-                    //GravarPassagem();
+                   
+                    Passagem passagem = new Passagem(idsPassagem, idVoo, System.DateTime.Now, valor, 'L');
+                 
                     string insertPassagem = $"INSERT INTO Passagem(IDPASSAGEM, IDVOO,DataUltimaOperacao,ValorUnitario,Situacao) VALUES('{idsPassagem}'," + $"'{idVoo}','{passagem.DataUltimaOperacao}','{passagem.ValorUnitario}','{passagem.Situacao}');";
                     bd.InsertDado(conexaosql, insertPassagem);
 
@@ -2191,16 +2094,12 @@ namespace AeroportoBD
                 TelaOpcoesCompanhiaAerea(compAtivo);
             }
         } // OK
-        static void TelaVoosDisponiveis(Passageiro passageiroAtivo)  // OK
+        static void TelaVoosDisponiveis()  // OK
         {
             int opc;
-            foreach (var Voo in listVoo)
-            {
-                if (Voo.Situacao == 'A')
-                {
-                    Console.WriteLine("IDVoo: " + Voo.IDVoo + " Destino: " + Voo.Destino + " Data e Hora do Voo: " + Voo.DataVoo.ToString("dd/MM/yyyy HH:mm"));
-                }
-            }
+            string VooDisp = $"SELECT * FROM Voo WHERE Situacao='{'A'}";
+            bd.SelectVoo(conexaosql, VooDisp);
+
             Console.WriteLine("\n----------------------------------------------------------------------------------------------");
             Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
             Console.WriteLine("0 - Voltar");
@@ -2215,30 +2114,22 @@ namespace AeroportoBD
                 case 1:
                     Console.Clear();
                     string idvoo = ValidarEntrada("idvoo");
-                    if (idvoo == null) TelaVoosDisponiveis(passageiroAtivo);
-                    TelaDescricaoVoo(idvoo, passageiroAtivo);
+                    if (idvoo == null) TelaVoosDisponiveis();
+                    TelaDescricaoVoo(idvoo);
                     break;
             }
         }
 
-        static void TelaDescricaoVoo(string idvoo, Passageiro passageiroAtivo)
+        static void TelaDescricaoVoo(string idvoo)
         {
 
             int opc;
-            Voo vooatual = null;
-            foreach (var voo in listVoo)
-            {
-                if (voo.IDVoo == idvoo)
-                {
-                    vooatual = voo;
-                    break;
-                }
-                else
-                {
-                    vooatual = null;
-                }
-            }
-            Console.WriteLine(vooatual.ToString());
+
+
+            string voo = $"SELECT * FROM Voo WHERE IDVOO='{idvoo}'";
+
+
+
             Console.WriteLine("\n----------------------------------------------------------------------------------------------");
             Console.WriteLine("1 - Comprar: ");
             Console.WriteLine("2 - Reservar: ");
@@ -2249,84 +2140,81 @@ namespace AeroportoBD
             switch (opc)
             {
                 case 0:
-                    TelaVoosDisponiveis(passageiroAtivo);
+                    TelaVoosDisponiveis();
                     break;
                 case 1:
                     int cont = 0;
                     bool retornar = false;
                     int quantPassagem;
+
                     do
                     {
+
                         Console.Clear();
                         Console.WriteLine("\nInforme a quantidade de passagens (máximo 4): \n1  2  3  4");
                         quantPassagem = int.Parse(ValidarEntrada("menu"));
                         if (quantPassagem > 0 && quantPassagem <= 4)
                         {
-                            foreach (var passagem in listPassagem)
-                            {
-                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
-                                {
-                                    cont++;
-                                }
-                            }
+                            string livre = $"SELECT *FROM PASSAGEM WHERE IDVOO='{idvoo}'AND Situacao='{'L'}';";
+                            bd.SelectPassagem(conexaosql, livre);
+                            cont++;
+
+
                             if (cont >= quantPassagem)
                             {
                                 cont = 0;
-                                Passagem p = null;
-                                foreach (var passagem in listPassagem)
-                                {
-                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
-                                    {
-                                        p = passagem;
-                                        passagem.Situacao = 'P';
-                                        string updatePassagem = $"UPDATE Passagem set Situacao = '{passagem.Situacao}' WHERE IDVOO='{passagem.IDVoo}'AND IDPASSAGEM='{passagem.IDPassagem}');";
-                                        bd.UpdateDado(conexaosql, updatePassagem);
-                                        passagem.DataUltimaOperacao = System.DateTime.Now;
-
-                                        VendaPassagem item = new VendaPassagem(GeradorId("iditemvenda"), GeradorId("idvenda"), passagem.ValorUnitario);
-                                        listItemVenda.Add(item);
-                                        string insertITEMVENDA = $"INSERT INTO VendaPassagem(IDITEMVENDA,IDVENDA,ValorUnitario) VALUES('{item.IDItemVenda}'," + $"'{item.IDVenda}','{item.ValorUnitario}';)";
-                                        bd.InsertDado(conexaosql, insertITEMVENDA);
-                                        cont++;
-                                    }
-
-                                    if (cont == quantPassagem)
-                                    {
-                                        retornar = true;
-                                        Venda venda = new Venda(GeradorId("idvenda"), System.DateTime.Now, (p.ValorUnitario * quantPassagem), passageiroAtivo.Cpf);
-                                        listVenda.Add(venda);
-                                        string insertVENDA = $"INSERT INTO Venda(IDVENDA,DataVenda,ValorTotal,CPF) VALUES('{venda.IDVenda}'," + $"'{venda.DataVenda}','{venda.ValorTotal}','{passageiroAtivo.Cpf}';)";
-                                        bd.InsertDado(conexaosql, insertVENDA);
-
-                                        passageiroAtivo.DataUltimaCompra = System.DateTime.Now;
-                                        string updatePassageiro = $"UPDATE Passageiro set DataUltimaCompra = '{passageiroAtivo.DataUltimaCompra}' WHERE CPF='{passageiroAtivo.Cpf}');";
-                                        bd.UpdateDado(conexaosql, updatePassageiro);
+                                string passagem = GeradorIdPassagens(quantPassagem);
+                                string updatePassagem = $"UPDATE Passagem set Situacao = '{'P'}' WHERE IDVOO='{idvoo}'AND IDPASSAGEM='{passagem}');";
+                                bd.UpdateDado(conexaosql, updatePassagem);
+                                string updateUltimaOp = $"UPDATE Passagem set DataUltimaOperacao = '{System.DateTime.Now}' WHERE IDVOO='{idvoo}'AND IDPASSAGEM='{passagem}');";
+                                bd.UpdateDado(conexaosql, updateUltimaOp);
 
 
+                                VendaPassagem item = new VendaPassagem(GeradorId("iditemvenda"), GeradorId("idvenda"), 100); //TODAS AS PASSAGENS ESTÃO EM PROMOÇÃO, CUSTAM O MESMO VALOR
 
-                                        foreach (var voo in listVoo)
-                                        {
-                                            if (idvoo == voo.IDVoo)
-                                            {
-                                                voo.QuantidadeAssentosOcupados = voo.QuantidadeAssentosOcupados + quantPassagem;
+                                string insertITEMVENDA = $"INSERT INTO VendaPassagem(IDITEMVENDA,IDVENDA,ValorUnitario) VALUES('{item.IDItemVenda}'," + $"'{item.IDVenda}','{item.ValorUnitario}';)";
+                                bd.InsertDado(conexaosql, insertITEMVENDA);
+                                cont++;
+                                Console.WriteLine("Compra realizada com sucesso!");
+                                Pausa();
+                                TelaVendas();
+                                break;
 
-                                                break;
-                                            }
-                                        }
-
-
-
-                                        Console.WriteLine("Compra realizada com sucesso!");
-                                        Pausa();
-                                        TelaVendas();
-                                        break;
-                                    }
-                                }
                             }
+
+                                if (cont == quantPassagem)
+                                {
+                                    retornar = true;
+                                    Console.WriteLine("Confirmação de seu CPF");
+                                    string cpf = ValidarEntrada("cpflogin");
+                                    Venda venda = new Venda(GeradorId("idvenda"), System.DateTime.Now, (100 * quantPassagem), cpf);
+
+                                    string insertVENDA = $"INSERT INTO Venda(IDVENDA,DataVenda,ValorTotal,CPF) VALUES('{venda.IDVenda}'," + $"'{venda.DataVenda}','{venda.ValorTotal}','{cpf}';)";
+                                    bd.InsertDado(conexaosql, insertVENDA);
+
+
+                                    string updatePassageiro = $"UPDATE Passageiro set DataUltimaCompra = '{System.DateTime.Now}' WHERE CPF='{cpf}');";
+                                    bd.UpdateDado(conexaosql, updatePassageiro);
+                                    /*
+                                    string VerVooAssentos = $"SELECT * FROM Voo WHERE ID='{idvoo}'";
+
+                                        if (!string.IsNullOrEmpty(bd.SelectVoo(conexaosql, VerVooAssentos)))
+                                        {
+                                            string AssentosOcupados = $"UPDATE VOO set QuantidadesAssentosOcupados='{(QuantidadeAssentosOcupados + quantPassagem)}' WhHERE IDVOO='{idvoo}";
+                                            break;
+                                        }
+                                  */
+                                    Console.WriteLine("Compra realizada com sucesso!");
+                                    Pausa();
+                                    TelaVendas();
+                                    break;
+                                }
+                            
                             else
                             {
                                 Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
                                 retornar = PausaMensagem();
+
                             }
                         }
                         else
@@ -2334,8 +2222,9 @@ namespace AeroportoBD
                             Console.WriteLine("Só é possível comprar [4] passagens por venda");
                             retornar = PausaMensagem();
                         }
+                        
                     } while (retornar == true);
-                    //   TelaHistoricoVendas();
+                      TelaHistoricoVendas();
                     break;
                 case 2:
 
@@ -2347,31 +2236,24 @@ namespace AeroportoBD
                         quantPassagem = int.Parse(ValidarEntrada("menu"));
                         if (quantPassagem > 0 && quantPassagem <= 4)
                         {
-                            foreach (var passagem in listPassagem)
-                            {
-                                if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
-                                {
-                                    cont++;
-                                }
-                            }
+                            string livre = $"SELECT *FROM PASSAGEM WHERE IDVOO='{idvoo}'AND Situacao='{'L'}';";
+                            bd.SelectPassagem(conexaosql, livre);
+                            cont++;
                             if (cont >= quantPassagem)
                             {
                                 cont = 0;
-                                Passagem p = null;
-                                foreach (var passagem in listPassagem)
-                                {
-                                    if (passagem.IDVoo == idvoo && passagem.Situacao == 'L')
-                                    {
-                                        p = passagem;
-                                        passagem.Situacao = 'R';
-                                        passagem.DataUltimaOperacao = System.DateTime.Now;
-                                        string updatePassagem = $"UPDATE Passagem set Situacao = '{passagem.Situacao}' WHERE IDVOO='{passagem.IDVoo}'AND IDPASSAGEM='{passagem.IDPassagem}');";
-                                        bd.UpdateDado(conexaosql, updatePassagem);
 
+                                string passagem = GeradorIdPassagens(quantPassagem);
+                                string updatePassagem = $"UPDATE Passagem set Situacao = '{'R'}' WHERE IDVOO='{idvoo}'AND IDPASSAGEM='{passagem}');";
+                                bd.UpdateDado(conexaosql, updatePassagem);
+                                string updateUltimaOp = $"UPDATE Passagem set DataUltimaOperacao = '{System.DateTime.Now}' WHERE IDVOO='{idvoo}'AND IDPASSAGEM='{passagem}');";
+                                bd.UpdateDado(conexaosql, updateUltimaOp);
+
+                               
                                         cont++;
-                                    }
+                                    
                                     if (cont == quantPassagem) break;
-                                }
+                                
                                 Console.Clear();
                                 Console.WriteLine("Reserva realizada com sucesso!");
                                 Pausa();
@@ -2389,10 +2271,10 @@ namespace AeroportoBD
                             retornar = PausaMensagem();
                         }
                     } while (retornar == true);
-                    //  TelaHistoricoReservadas();
+                      TelaHistoricoReservadas();
                     break;
             }
-        } //
+        } 
 
 
         #endregion
@@ -2434,7 +2316,7 @@ namespace AeroportoBD
             if (dataAbertura == null) TelaInicialCompanhiasAereas();
 
             CompanhiaAerea novaComp = new CompanhiaAerea(cnpj, nomeComp, DateConverter(dataAbertura), System.DateTime.Now, System.DateTime.Now, 'A');
-            listCompanhia.Add(novaComp);
+         
 
             string insert = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao) VALUES('{novaComp.Cnpj}'," + $"'{novaComp.RazaoSocial}','{novaComp.DataAbertura}','{novaComp.DataUltimoVoo}','{novaComp.DataCadastro}','{novaComp.Situacao}');";
             bd = new BD();
@@ -2487,7 +2369,7 @@ namespace AeroportoBD
 
                     case 3:
                         string selectVoo = $"SELECT INSCRICAO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo";
-                         bd.SelectVoo(conexaosql, selectVoo);
+                        bd.SelectVoo(conexaosql, selectVoo);
 
                         Console.WriteLine("\n----------------------------------------------------------------------------------------------");
                         Console.WriteLine("\n1 - Escolher o Voo Desejado: ");
@@ -2544,7 +2426,7 @@ namespace AeroportoBD
                         CadastrarAeroporto();
                         break;
                     case 8:
-                        
+
                         string iata = ValidarEntrada("destino");
 
 
@@ -2917,7 +2799,7 @@ namespace AeroportoBD
             Console.WriteLine("Confirmação de seu CNPJ  ");
             string cnpj = ValidarEntrada("cnpjexiste");
 
-          idAeronave = ValidarEntrada("idaeronave");
+            idAeronave = ValidarEntrada("idaeronave");
             if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
 
             capacidade = int.Parse(ValidarEntrada("capacidade"));
@@ -2925,10 +2807,10 @@ namespace AeroportoBD
 
             situacao = char.Parse(ValidarEntrada("situacao"));
             if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
-          
+
             Console.ReadKey();
             novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, cnpj);
-        
+
             string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,UltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{novaAeronave.Cnpj}');";
             bd = new BD();
             bd.InsertDado(conexaosql, insert);

@@ -346,7 +346,7 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         }  //OK
-        public String SelectReserva(SqlConnection conexaosql, String selectR)
+        public String SelectPassagem(SqlConnection conexaosql, String selectR)
         {
             String s = "";
             try
