@@ -1202,7 +1202,7 @@ namespace AeroportoBD
                                                 Thread.Sleep(200);
                                                 Console.Write(" .\n");
                                                 Thread.Sleep(200);
-                                                Console.Write("Por favor, Informe seu CNPJ novamente: ");
+                                            
                                                 string cnpj = ValidarEntrada("cnpjexiste");
                                                 string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}'AND CNPJ='{cnpj};";
                                                 if (!string.IsNullOrEmpty(bd.SelectAeronave(conexaosql, BuscaAero)))
@@ -1409,7 +1409,7 @@ namespace AeroportoBD
                             if (!string.IsNullOrEmpty(bd.SelectIATA(conexaosql, SelectAeroporto)))
                             {
                                 encontrado = true;
-                                Console.Write("Aeroporto já cadastrado!");
+                                Console.Write("Aeroporto já cadastrado!\n");
 
                             }
                             if (encontrado == true)
@@ -1441,7 +1441,7 @@ namespace AeroportoBD
                 #endregion
 
 
-                case "aeronave":
+                case "aeronave": //PROBLEMA
 
                     #region Aeronave
                     encontrado = false;
@@ -1463,8 +1463,15 @@ namespace AeroportoBD
 
                             if (encontrado == true)
                             {
-
-                                return idaeronave;
+                                if (a.Situacao == 'A')
+                                {
+                                    return idaeronave;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Essa Aeronave encontra-se inativa no sistema.");
+                                    retornar = PausaMensagem();
+                                }
 
                             }
                             else
@@ -1504,7 +1511,7 @@ namespace AeroportoBD
                             if (!string.IsNullOrEmpty(bd.SelectAeronave(conexaosql, BuscaAeronave)))
                             {
                                 encontrado = true;
-                                break;
+                               
                             }
                             if (encontrado == true)
                             {
@@ -1562,8 +1569,9 @@ namespace AeroportoBD
                 #endregion
 
                 case "cpflogin": //na hora da venda
-                    //OK
-                    #region CpflLogin
+                               
+                                 //PROBLEMA
+                    #region CpflLogin   
 
                     do
                     {
@@ -2905,12 +2913,11 @@ namespace AeroportoBD
                         Console.Write("Informe o CPF que deseja excluir: ");
                         string cpf = ValidarEntrada("cpfexiste");
                         if (cpf == null) TelaInicialCpfRestritos();
-                        string removeRestrito = "DELETE FROM Restrito WHERE cpf = @CPF);";
+                        string removeRestrito = $"DELETE FROM Restrito WHERE CPF = '{cpf}');";
                         bd.DeleteDado(conexaosql, removeRestrito);
 
                         Console.Clear();
-                        Console.WriteLine("Cpf Removido com sucesso!");
-                        Pausa();
+                           Pausa();
                         TelaInicialCpfRestritos();
 
                         break;

@@ -75,7 +75,8 @@ namespace AeroportoBD
                 SqlCommand cmdDELETE = new SqlCommand(update,conn);
                 cmdDELETE.Connection = conexaosql;
                 cmdDELETE.ExecuteNonQuery();
-               
+                Console.WriteLine("Cpf Removido com sucesso!");
+
 
             }
             catch (Exception)
