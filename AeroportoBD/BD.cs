@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,12 +30,12 @@ namespace AeroportoBD
         {
             try
             {
-               
+
                 conexaosql.Open();
                 SqlCommand cmdINSERT = new SqlCommand(insert, conn);
                 cmdINSERT.Connection = conexaosql;
                 cmdINSERT.ExecuteNonQuery();
-              
+
             }
             catch (SqlException e)
             {
@@ -57,7 +58,7 @@ namespace AeroportoBD
                 SqlCommand cmdUPDATE = new SqlCommand(update, conexaosql);
                 cmdUPDATE.Connection = conexaosql;
                 cmdUPDATE.ExecuteNonQuery();
-                
+
             }
             catch (SqlException)
             {
@@ -67,12 +68,12 @@ namespace AeroportoBD
             Console.ReadKey();
         } //OK
 
-      public void DeleteDado(SqlConnection conexaosql, String update)
+        public void DeleteDado(SqlConnection conexaosql, String update)
         {
             try
             {
                 conexaosql.Open();
-                SqlCommand cmdDELETE = new SqlCommand(update,conn);
+                SqlCommand cmdDELETE = new SqlCommand(update, conn);
                 cmdDELETE.Connection = conexaosql;
                 cmdDELETE.ExecuteNonQuery();
                 Console.WriteLine("Cpf Removido com sucesso!");
@@ -117,7 +118,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("\nFim da Impressão!");
                 }
-              
+
             }
             catch (SqlException)
             {
@@ -128,8 +129,38 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         }
+        public CompanhiaAerea SelectCompanhiaAereaVER(SqlConnection conexaosql, String selectC)
+        {
+            CompanhiaAerea compAtual = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectC, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
 
-  
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        compAtual = new CompanhiaAerea(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetChar(5));
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+
+            Console.ReadKey();
+            return compAtual;
+        }
+
         #endregion
 
         #region Passageiro
@@ -161,7 +192,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-         
+
             }
             catch (SqlException)
             {
@@ -171,6 +202,67 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         } // OK
+        public bool CpfExiste(SqlConnection conexaosql, String selectPass)
+        {
+
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectPass, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+
+                        return true;
+                    }
+
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+
+            Console.ReadKey();
+            return false;
+        }
+        public Passageiro SelectPassageiroVER(SqlConnection conexaosql, String selectPassageiro)
+        {
+            Passageiro passageiroAtual = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectPassageiro, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        passageiroAtual = new Passageiro(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetChar(3), reader.GetDateTime(4), reader.GetDateTime(5), reader.GetChar(6));
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+
+            Console.ReadKey();
+            return passageiroAtual;
+        }
 
         #endregion
 
@@ -195,7 +287,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-             
+
             }
             catch (SqlException)
             {
@@ -236,6 +328,34 @@ namespace AeroportoBD
                 Console.Write("Não foi possível imprimir");
             }
             return s;
+        }
+        public Restrito SelectRestritoVER(SqlConnection conexaosql, String selectPR)
+        {
+            Restrito r = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectPR, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                    {
+                        s = reader.GetString(0);
+                        r = new Restrito(reader.GetString(0));
+                    }
+
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            return r;
         }
         public String SelectBloqueado(SqlConnection conexaosql, String selectBloq)
         {
@@ -295,7 +415,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("\n>>> Fim da Impressão! <<<");
                 }
-              
+
             }
             catch (SqlException)
             {
@@ -305,11 +425,42 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         }    //OK
+        public Aeronave SelectAeronaveVER(SqlConnection conexaosql, String selectA)
+        {
+            Aeronave aeronaveAtual = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectA, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        aeronaveAtual = new Aeronave(reader.GetString(0), reader.GetInt32(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetChar(4), reader.GetString(5));
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+
+            Console.ReadKey();
+            return aeronaveAtual;
+        }
 
 
 
-      
-      
+
+
 
         #endregion
 
@@ -338,7 +489,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-               
+
             }
             catch (SqlException)
             {
@@ -373,7 +524,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-          
+
             }
             catch (SqlException)
             {
@@ -384,6 +535,39 @@ namespace AeroportoBD
             return s;
         }  //OK
 
+
+        public Passagem VerPassagem(SqlConnection conexaosql, String selectR)
+        {
+            Passagem pass = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectR, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    {
+
+                        s = reader.GetString(0);
+                        pass = new Passagem(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetFloat(3), reader.GetChar(4));
+
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+            Console.ReadKey();
+            return pass;
+        }
         public String SelectVendaPassagem(SqlConnection conexaosql, String selectVP)
         {
             String s = "";
@@ -407,7 +591,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-                
+
             }
             catch (SqlException)
             {
@@ -448,7 +632,7 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 }
-              
+
             }
             catch (SqlException)
             {
@@ -458,9 +642,70 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         } // OK
-        #endregion
+        public Voo VerVoo(SqlConnection conexaosql, String selectVOO)
+        {
+            Voo v = null;
+            String s = "";
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectVOO, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        v = new Voo(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetInt32(4), reader.GetChar(5));
+                    }
 
-      
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+            Console.ReadKey();
+            return v;
+            #endregion
+
+           
+        }
+
+        public int ContaP(SqlConnection conexaosql, String selectV)
+        {
+
+            int s=0;
+            try
+            {
+                conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectV, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    {
+
+                        s = reader.GetInt32(0);
+                     
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+            Console.ReadKey();
+            return s;
+        }
     }
-
+   
 }
+
