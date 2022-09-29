@@ -409,7 +409,7 @@ namespace AeroportoBD
                                                 encontrado = false;
                                                 string buscarestrito = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF='{cpf}'; ";
 
-                                                if (!string.IsNullOrEmpty(bd.SelectPassageiro(conexaosql, buscarestrito)))
+                                                if (!string.IsNullOrEmpty(bd.SelectPassageiroVerUm(conexaosql, buscarestrito)))
                                                 {
 
                                                     encontrado = true;
@@ -1951,7 +1951,7 @@ namespace AeroportoBD
                     string cpfLogin = ValidarEntrada("cpflogin");
                     if (cpfLogin == null) TelaInicial();
                     string loginPassageiro = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpfLogin}');";
-                    bd.SelectPassageiro(conexaosql, loginPassageiro);
+                    bd.SelectPassageiroVerUm(conexaosql, loginPassageiro);
 
                     Console.Clear();
                     TelaVoosDisponiveis();
@@ -2461,14 +2461,14 @@ namespace AeroportoBD
             if (quero == 1)
             {
                 String selectPassageiro = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.SelectPassageiro(conexaosql, selectPassageiro);
+                bd.SelectPassageiroVerUm(conexaosql, selectPassageiro);
                 TelaEditarPassageiro(passageiroAtivo);
 
             }
             else if (quero == 2)
             {
                 String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO WHERE CPF=('{cpf}');";
-                bd.SelectPassageiro(conexaosql, selectP);
+                bd.SelectPassageiroVerUm(conexaosql, selectP);
                 Pausa();
             }
             else
@@ -2518,7 +2518,7 @@ namespace AeroportoBD
             do
             {
                 Console.Clear();
-                Console.WriteLine("\nEDTAR DADOS");
+                Console.WriteLine("\nEDTAR DADOS ");
                 Console.WriteLine("\nEscolha qual Dado deseja Editar: ");
                 Console.Write("\n 1 - Nome");
                 Console.Write("\n 2 - Data de Nascimento");
@@ -2706,7 +2706,7 @@ namespace AeroportoBD
                         break;
                     case 3:
                         String selectP = $"SELECT CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao FROM PASSAGEIRO";
-                        bd.SelectPassageiro(conexaosql, selectP);
+                        bd.SelectPassageiroVizualizarTodos(conexaosql, selectP);
                         break;
 
                 }

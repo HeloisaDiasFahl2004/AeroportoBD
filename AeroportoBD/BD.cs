@@ -54,7 +54,7 @@ namespace AeroportoBD
         {
             try
             {
-                conexaosql.Open();
+                // conexaosql.Open();
                 SqlCommand cmdUPDATE = new SqlCommand(update, conexaosql);
                 cmdUPDATE.Connection = conexaosql;
                 cmdUPDATE.ExecuteNonQuery();
@@ -131,7 +131,7 @@ namespace AeroportoBD
         }
         public CompanhiaAerea SelectCompanhiaAereaVER(SqlConnection conexaosql, String selectC)
         {
-            CompanhiaAerea compAtual = null;
+            CompanhiaAerea compAtual = new CompanhiaAerea();
             String s = "";
             try
             {
@@ -144,7 +144,12 @@ namespace AeroportoBD
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
-                        compAtual = new CompanhiaAerea(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetChar(5));
+                        compAtual.Cnpj= reader.GetString(0);
+                        compAtual.RazaoSocial = reader.GetString(1);
+                        compAtual.DataAbertura= reader.GetDateTime(2);
+                        compAtual.DataCadastro=reader.GetDateTime(3);
+                        compAtual.DataUltimoVoo = reader.GetDateTime(4);
+                        compAtual.Situacao = char.Parse(reader.GetString(5));
 
                     }
 
@@ -164,7 +169,43 @@ namespace AeroportoBD
         #endregion
 
         #region Passageiro
-        public String SelectPassageiro(SqlConnection conexaosql, String selectP)
+        public String SelectPassageiroVerUm(SqlConnection conexaosql, String selectP)
+        {
+            String s = "";
+            try
+            {
+               // conexaosql.Open();
+                SqlCommand cmdSELECT = new SqlCommand(selectP, conexaosql);
+                SqlDataReader reader = null;
+                using (reader = cmdSELECT.ExecuteReader())
+                {
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                    Console.WriteLine("\nCPF\tNome\tData Nascimento\tSexo\tData Última Compra\tDataCadastro\tSituacao\n");
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        Console.Write("{0}\t", reader.GetString(0));
+                        Console.Write("{0}\t", reader.GetString(1));
+                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write("{0}\t", reader.GetString(3));
+                        Console.Write("{0}\t", reader.GetDateTime(4).ToShortDateString());
+                        Console.Write("{0}\t", reader.GetDateTime(5).ToShortDateString());
+                        Console.WriteLine("{0}\t", reader.GetString(6));
+
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+            conexaosql.Close();
+            Console.ReadKey();
+            return s;
+        } // OK
+        public String SelectPassageiroVizualizarTodos(SqlConnection conexaosql, String selectP)
         {
             String s = "";
             try
@@ -199,510 +240,523 @@ namespace AeroportoBD
             conexaosql.Close();
             Console.ReadKey();
             return s;
-        } // OK
-        public bool CpfExiste(SqlConnection conexaosql, String selectPass)
-        {
-
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectPass, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
-
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-
-                        return true;
-                    }
-
-
-                }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-
-            Console.ReadKey();
-            return false;
         }
-        public Passageiro SelectPassageiroVER(SqlConnection conexaosql, String selectPassageiro)
-        {
-            Passageiro passageiroAtual = null;
-            String s = "";
-            try
+            public bool CpfExiste(SqlConnection conexaosql, String selectPass)
             {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectPassageiro, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
 
-                    while (reader.Read()) // enquanto tiver leitura para fazer
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectPass, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        passageiroAtual = new Passageiro(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetChar(3), reader.GetDateTime(4), reader.GetDateTime(5), reader.GetChar(6));
+
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+
+                            return true;
+                        }
+
 
                     }
 
                 }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-
-            Console.ReadKey();
-            return passageiroAtual;
-        }
-
-        #endregion
-
-        #region Aeroporto
-        public String SelectIATA(SqlConnection conexaosql, String selectAEROPORTO)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                catch (SqlException)
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AEROPORTO <<<");
-                    Console.WriteLine("\tIATA\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-                        s = reader.GetString(0);
-                        Console.WriteLine("{0}\t", reader.GetString(0));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
+                    Console.Write("Não foi possível imprimir");
                 }
+                conexaosql.Close();
 
+                Console.ReadKey();
+                return false;
             }
-            catch (SqlException)
+            public Passageiro SelectPassageiroVER(SqlConnection conexaosql, String selectPassageiro)
             {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }
-
-        #endregion
-
-        #region Exceções
-        public String SelectRestrito(SqlConnection conexaosql, String selectPR)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectPR, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                Passageiro passageiroAtual = new Passageiro();
+                String s = "";
+                try
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
-                    Console.WriteLine("\nCPF\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer,faz
+
+                    //  conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectPassageiro, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        Console.WriteLine(" {0} ", reader.GetString(0));
+
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+                            s = reader.GetString(0);
+                            //passageiroAtual = new Passageiro(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetChar(3), reader.GetDateTime(4), reader.GetDateTime(5), reader.GetChar(6));
+
+
+                            passageiroAtual.Cpf = reader.GetString(0);
+                            passageiroAtual.Nome = reader.GetString(1);
+                            passageiroAtual.DataNascimento = reader.GetDateTime(2);
+                            passageiroAtual.Sexo = char.Parse(reader.GetString(3));
+                            passageiroAtual.DataUltimaCompra = reader.GetDateTime(4);
+                            passageiroAtual.DataCadastro = reader.GetDateTime(5);
+                            passageiroAtual.Situacao = char.Parse(reader.GetString(6));
+
+                        }
+
                     }
-                    Console.WriteLine("Fim da Impressão!");
+
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+
+                Console.ReadKey();
+                return passageiroAtual;
+            }
+
+            #endregion
+
+            #region Aeroporto
+            public String SelectIATA(SqlConnection conexaosql, String selectAEROPORTO)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AEROPORTO <<<");
+                        Console.WriteLine("\tIATA\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+                            s = reader.GetString(0);
+                            Console.WriteLine("{0}\t", reader.GetString(0));
+
+                        }
+                        Console.WriteLine("Fim da Impressão!");
+                    }
+
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
                 }
                 conexaosql.Close();
                 Console.ReadKey();
+                return s;
             }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            return s;
-        }
-        public Restrito SelectRestritoVER(SqlConnection conexaosql, String selectPR)
-        {
-            Restrito r = null;
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectPR, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
 
-                    while (reader.Read()) // enquanto tiver leitura para fazer,faz
+            #endregion
+
+            #region Exceções
+            public String SelectRestrito(SqlConnection conexaosql, String selectPR)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectPR, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        r = new Restrito(reader.GetString(0));
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                        Console.WriteLine("\nCPF\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                        {
+                            s = reader.GetString(0);
+                            Console.WriteLine(" {0} ", reader.GetString(0));
+                        }
+                        Console.WriteLine("Fim da Impressão!");
                     }
 
+                    Console.ReadKey();
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                return s;
+            }
+            public Restrito SelectRestritoVER(SqlConnection conexaosql, String selectPR)
+            {
+                Restrito r = null;
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectPR, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+
+                        while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                        {
+                            s = reader.GetString(0);
+                            r = new Restrito(reader.GetString(0));
+                        }
+
+                    }
+
+                    Console.ReadKey();
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                return r;
+            }
+            public String SelectBloqueado(SqlConnection conexaosql, String selectBloq)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectBloq, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
+                        Console.WriteLine("\nCNPJ\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                        {
+                            s = reader.GetString(0);
+                            Console.Write(" {0} ", reader.GetString(0));
+                        }
+                        Console.WriteLine("Fim da Impressão!");
+                    }
+
+                    Console.ReadKey();
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                return s;
+            }
+
+            #endregion
+
+            #region Aeronave
+            public String SelectAeronave(SqlConnection conexaosql, String selectA)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectA, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AERONAVE <<<");
+                        Console.WriteLine("\nInscrição\t\tCapacidade\tData Ultima Venda\tData Cadastro\t\tSituacao\tCNPJ\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                        {
+                            s = reader.GetString(0);
+                            Console.Write("{0}\t", reader.GetString(0));
+                            Console.Write("\t\t{0} ", reader.GetInt32(1));
+                            Console.Write("\t\t{0} ", reader.GetDateTime(2).ToShortDateString());
+                            Console.Write("\t\t{0} ", reader.GetDateTime(3).ToShortDateString());
+                            Console.Write("\t\t{0} \t", reader.GetString(4));
+                            Console.WriteLine("\t{0} ", reader.GetString(5));
+
+
+                        }
+                        Console.WriteLine("\n>>> Fim da Impressão! <<<");
+                    }
+
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
                 }
                 conexaosql.Close();
                 Console.ReadKey();
-            }
-            catch (SqlException)
+                return s;
+            }    //OK
+            public Aeronave SelectAeronaveVER(SqlConnection conexaosql, String selectA)
             {
-                Console.Write("Não foi possível imprimir");
-            }
-            return r;
-        }
-        public String SelectBloqueado(SqlConnection conexaosql, String selectBloq)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectBloq, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                Aeronave aeronaveAtual = null;
+                String s = "";
+                try
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
-                    Console.WriteLine("\nCNPJ\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectA, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        Console.Write(" {0} ", reader.GetString(0));
+
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+                            s = reader.GetString(0);
+                            aeronaveAtual = new Aeronave(reader.GetString(0), reader.GetInt32(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetChar(4), reader.GetString(5));
+
+                        }
+
                     }
-                    Console.WriteLine("Fim da Impressão!");
+
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+
+                Console.ReadKey();
+                return aeronaveAtual;
+            }
+
+
+            #endregion
+
+            #region Venda
+            public String SelectVenda(SqlConnection conexaosql, String selectVenda)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectVenda, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VENDA <<<");
+                        Console.WriteLine("\nID Venda\tData Venda\tValor Total\tCPF\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+
+                            s = reader.GetString(0);
+                            Console.Write("{0}\t", reader.GetString(0));
+                            Console.Write("{0}\t", reader.GetDateTime(1).ToShortDateString());
+                            Console.Write("{0}\t", reader.GetString(2));
+                            Console.WriteLine("{0}\t", reader.GetString(3));
+
+                        }
+                        Console.WriteLine("Fim da Impressão!");
+                    }
+
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
                 }
                 conexaosql.Close();
                 Console.ReadKey();
-            }
-            catch (SqlException)
+                return s;
+            }  //OK
+            public String SelectPassagem(SqlConnection conexaosql, String selectR)
             {
-                Console.Write("Não foi possível imprimir");
-            }
-            return s;
-        }
-
-        #endregion
-
-        #region Aeronave
-        public String SelectAeronave(SqlConnection conexaosql, String selectA)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectA, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                String s = "";
+                try
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AERONAVE <<<");
-                    Console.WriteLine("\nInscrição\t\tCapacidade\tData Ultima Venda\tData Cadastro\t\tSituacao\tCNPJ\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer,faz
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectR, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("\t\t{0} ", reader.GetInt32(1));
-                        Console.Write("\t\t{0} ", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("\t\t{0} ", reader.GetDateTime(3).ToShortDateString());
-                        Console.Write("\t\t{0} \t", reader.GetString(4));
-                        Console.WriteLine("\t{0} ", reader.GetString(5));
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS RESERVADAS<<<");
+                        Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                        {
 
+                            s = reader.GetString(0);
+                            Console.Write("{0}\t", reader.GetString(0));
+                            Console.Write("{0}\t", reader.GetString(1));
+                            Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
+                            Console.Write("{0}\t", reader.GetString(3));
+                            Console.WriteLine("{0}\t", reader.GetString(4));
 
+                        }
+                        Console.WriteLine("Fim da Impressão!");
                     }
-                    Console.WriteLine("\n>>> Fim da Impressão! <<<");
+
                 }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }    //OK
-        public Aeronave SelectAeronaveVER(SqlConnection conexaosql, String selectA)
-        {
-            Aeronave aeronaveAtual = null;
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectA, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                catch (SqlException)
                 {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+                return s;
+            }  //OK
 
-                    while (reader.Read()) // enquanto tiver leitura para fazer
+
+            public Passagem VerPassagem(SqlConnection conexaosql, String selectR)
+            {
+                Passagem pass = null;
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectR, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
-                        s = reader.GetString(0);
-                        aeronaveAtual = new Aeronave(reader.GetString(0), reader.GetInt32(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetChar(4), reader.GetString(5));
+
+                        while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                        {
+
+                            s = reader.GetString(0);
+                            pass = new Passagem(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetFloat(3), reader.GetChar(4));
+
+
+                        }
 
                     }
 
                 }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-
-            Console.ReadKey();
-            return aeronaveAtual;
-        }
-
-
-        #endregion
-
-        #region Venda
-        public String SelectVenda(SqlConnection conexaosql, String selectVenda)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectVenda, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                catch (SqlException)
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VENDA <<<");
-                    Console.WriteLine("\nID Venda\tData Venda\tValor Total\tCPF\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetDateTime(1).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetString(2));
-                        Console.WriteLine("{0}\t", reader.GetString(3));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
+                    Console.Write("Não foi possível imprimir");
                 }
-
+                conexaosql.Close();
+                Console.ReadKey();
+                return pass;
             }
-            catch (SqlException)
+            public String SelectVendaPassagem(SqlConnection conexaosql, String selectVP)
             {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }  //OK
-        public String SelectPassagem(SqlConnection conexaosql, String selectR)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectR, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                String s = "";
+                try
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS RESERVADAS<<<");
-                    Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectVP, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS ITEM VENDA <<<");
+                        Console.WriteLine("\nID Item Venda\tID Venda\tValorUnitario\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                        {
 
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetString(3));
-                        Console.WriteLine("{0}\t", reader.GetString(4));
+                            s = reader.GetString(0);
+                            Console.Write("{0}\t", reader.GetString(0));
+                            Console.Write("{0}\t", reader.GetString(1));
+                            Console.Write("{0}\t", reader.GetString(2));
 
+                        }
+                        Console.WriteLine("Fim da Impressão!");
                     }
-                    Console.WriteLine("Fim da Impressão!");
+
                 }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }  //OK
-
-
-        public Passagem VerPassagem(SqlConnection conexaosql, String selectR)
-        {
-            Passagem pass = null;
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectR, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                catch (SqlException)
                 {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+                return s;
+            }
 
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+
+            #endregion
+
+            #region VOO
+            public String SelectVoo(SqlConnection conexaosql, String selectVOO)
+            {
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectVOO, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
+                        Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VOO <<<");
+                        Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos\tSituacao\n");
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+                            s = reader.GetString(0);
+                            Console.Write("{0}\t", reader.GetString(0));
+                            Console.Write("{0}\t", reader.GetString(1));
+                            Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
+                            Console.Write("{0}\t", reader.GetDateTime(3).ToShortDateString());
+                            Console.WriteLine("{0}\t", reader.GetInt32(4));
+                            Console.WriteLine("{0}\t", reader.GetString(5));
 
-                        s = reader.GetString(0);
-                        pass = new Passagem(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetFloat(3), reader.GetChar(4));
+                        }
+                        Console.WriteLine("Fim da Impressão!");
+                    }
 
+                }
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+                return s;
+            } // OK
+            public Voo VerVoo(SqlConnection conexaosql, String selectVOO)
+            {
+                Voo v = null;
+                String s = "";
+                try
+                {
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectVOO, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
+                    {
+                        while (reader.Read()) // enquanto tiver leitura para fazer
+                        {
+                            s = reader.GetString(0);
+                            v = new Voo(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetInt32(4), reader.GetChar(5));
+                        }
 
                     }
 
                 }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return pass;
-        }
-        public String SelectVendaPassagem(SqlConnection conexaosql, String selectVP)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectVP, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                catch (SqlException)
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS ITEM VENDA <<<");
-                    Console.WriteLine("\nID Item Venda\tID Venda\tValorUnitario\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
-                    {
-
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetString(2));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
+                    Console.Write("Não foi possível imprimir");
                 }
+                conexaosql.Close();
+                Console.ReadKey();
+                return v;
+
+
 
             }
-            catch (SqlException)
+            #endregion
+
+            #region Passagem
+            public int ContaP(SqlConnection conexaosql, String selectV)
             {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }
 
-
-        #endregion
-
-        #region VOO
-        public String SelectVoo(SqlConnection conexaosql, String selectVOO)
-        {
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectVOO, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                int s = 0;
+                try
                 {
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VOO <<<");
-                    Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos\tSituacao\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetDateTime(3).ToShortDateString());
-                        Console.WriteLine("{0}\t", reader.GetInt32(4));
-                        Console.WriteLine("{0}\t", reader.GetString(5));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
-                }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        } // OK
-        public Voo VerVoo(SqlConnection conexaosql, String selectVOO)
-        {
-            Voo v = null;
-            String s = "";
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectVOO, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
-                    while (reader.Read()) // enquanto tiver leitura para fazer
-                    {
-                        s = reader.GetString(0);
-                        v = new Voo(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetInt32(4), reader.GetChar(5));
-                    }
-
-                }
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return v;
-
-
-
-        }
-        #endregion
-
-        #region Passagem
-        public int ContaP(SqlConnection conexaosql, String selectV)
-        {
-
-            int s = 0;
-            try
-            {
-                conexaosql.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectV, conexaosql);
-                SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
-                {
-
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    conexaosql.Open();
+                    SqlCommand cmdSELECT = new SqlCommand(selectV, conexaosql);
+                    SqlDataReader reader = null;
+                    using (reader = cmdSELECT.ExecuteReader())
                     {
 
-                        s = reader.GetInt32(0);
+                        while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                        {
 
+                            s = reader.GetInt32(0);
+
+
+                        }
 
                     }
 
                 }
-
+                catch (SqlException)
+                {
+                    Console.Write("Não foi possível imprimir");
+                }
+                conexaosql.Close();
+                Console.ReadKey();
+                return s;
             }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-            conexaosql.Close();
-            Console.ReadKey();
-            return s;
-        }
 
-        #endregion
-
+            #endregion
+        
     }
 
 }
