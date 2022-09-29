@@ -164,8 +164,6 @@ namespace AeroportoBD
         #endregion
 
         #region Passageiro
-
-
         public String SelectPassageiro(SqlConnection conexaosql, String selectP)
         {
             String s = "";
@@ -458,10 +456,6 @@ namespace AeroportoBD
         }
 
 
-
-
-
-
         #endregion
 
         #region Venda
@@ -606,7 +600,6 @@ namespace AeroportoBD
         #endregion
 
         #region VOO
-
         public String SelectVoo(SqlConnection conexaosql, String selectVOO)
         {
             String s = "";
@@ -669,15 +662,17 @@ namespace AeroportoBD
             conexaosql.Close();
             Console.ReadKey();
             return v;
-            #endregion
 
-           
+
+
         }
+        #endregion
 
+        #region Passagem
         public int ContaP(SqlConnection conexaosql, String selectV)
         {
 
-            int s=0;
+            int s = 0;
             try
             {
                 conexaosql.Open();
@@ -690,7 +685,7 @@ namespace AeroportoBD
                     {
 
                         s = reader.GetInt32(0);
-                     
+
 
                     }
 
@@ -705,7 +700,10 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         }
+
+        #endregion
+
     }
-   
+
 }
 

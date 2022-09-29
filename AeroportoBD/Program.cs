@@ -21,8 +21,6 @@ namespace AeroportoBD
 
         #endregion
 
-
-
         #region DataConversão
         static public DateTime DateConverter(string data)
         {
@@ -2023,7 +2021,7 @@ namespace AeroportoBD
         #region Opções Voo
         //Cadastro Voo com ID Aleatório, Cadastro Passagens desse voo com ID Aleatório
 
-        //PROBLEMA
+
 
         static void TelaCadastrarVoo(CompanhiaAerea compAtivo)
         {
@@ -2111,7 +2109,7 @@ namespace AeroportoBD
             }
         }
 
-        // PROBLEMA
+
 
         static void TelaDescricaoVoo(string idvoo)
         {
@@ -2135,7 +2133,7 @@ namespace AeroportoBD
                     TelaVoosDisponiveis();
                     break;
                 case 1:
-                   
+
                 case 2:
 
                     int cont = 0;
@@ -2207,7 +2205,7 @@ namespace AeroportoBD
                         }
 
                     } while (retornar == true);
-                   
+
                     break;
 
 
@@ -2280,8 +2278,7 @@ namespace AeroportoBD
                 Console.WriteLine(" 4 - Ativar/Inativar Aeronave\n"); // update aeronave situacao = A/I -- OK
                 Console.WriteLine(" 5 - Editar dados da Companhia Aerea\n"); // update Companhia Aerea  -- OK
                 Console.WriteLine(" 6 - Vizualizar dados da Companhia Aerea\n");// OK
-                Console.WriteLine(" 7 - Cadastrar Aeroporto Destino\n");// OK
-                Console.WriteLine(" 8 - Ver Aeroportos Cadastrados\n");// OK
+                Console.WriteLine(" 7 - Ver Aeroportos Cadastrados\n");// OK
 
                 Console.WriteLine("\n 0 - Encerrar Sessão\n");
                 opc = int.Parse(ValidarEntrada("menu"));
@@ -2335,10 +2332,6 @@ namespace AeroportoBD
                                 Console.WriteLine("Voo CANCELADO!! Um novo Voo deve ser cadastrado.");
                                 Pausa();
                                 TelaOpcoesCompanhiaAerea(compAtivo);
-
-
-
-
                                 break;
                         }
 
@@ -2364,13 +2357,8 @@ namespace AeroportoBD
                         bd.SelectCompanhiaAerea(conexaosql, selectComp);
                         break;
                     case 7:
-                        CadastrarAeroporto();
-                        break;
-                    case 8:
-
                         string verAeroporto = $"SELECT IATA FROM Aeroporto ;";
                         bd.SelectIATA(conexaosql, verAeroporto);
-
                         break;
 
                 }
@@ -2487,7 +2475,7 @@ namespace AeroportoBD
             {
                 Console.WriteLine("Opção Inválida!");
             }
-        } // Visualiza / ERRO-Login
+        } // Visualiza 
         static void TelaCadastrarPassageiro()
         {
             do
@@ -2792,15 +2780,7 @@ namespace AeroportoBD
         #endregion
 
         #region Aeroporto
-        static void CadastrarAeroporto()
-        {
-            string iata = ValidarEntrada("destino");
-            if (iata == null) TelaInicialCompanhiasAereas();
-            Aeroporto aeroporto = new Aeroporto(iata);
 
-
-            TelaInicialCompanhiasAereas();
-        }
         #endregion
 
         #region Exceções
