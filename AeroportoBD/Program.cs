@@ -1418,7 +1418,7 @@ namespace AeroportoBD
                             else
                             {
                                 string insert = $"INSERT INTO Aeroporto(IATA) VALUES('{iata}');";
-                                bd = new BD();
+                                
                                 bd.InsertDado( insert);
                                 Console.WriteLine("\nAeroporto Cadastrado com Sucesso!");
 
@@ -2261,7 +2261,7 @@ namespace AeroportoBD
 
 
             string insert = $"INSERT INTO CompanhiaAerea(CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao) VALUES('{novaComp.Cnpj}'," + $"'{novaComp.RazaoSocial}','{novaComp.DataAbertura}','{novaComp.DataUltimoVoo}','{novaComp.DataCadastro}','{novaComp.Situacao}');";
-            bd = new BD();
+           
             bd.InsertDado(insert);
             TelaInicialCompanhiasAereas();
 
@@ -2502,7 +2502,7 @@ namespace AeroportoBD
                 Passageiro novoPassageiro = new Passageiro(cpf, nome, DateConverter(dataNascimento), sexo, System.DateTime.Now, System.DateTime.Now, 'A');
 
                 string insert = $"INSERT INTO Passageiro(CPF,Nome,DataNascimento,Sexo,DataUltimaCompra,DataCadastro,Situacao) VALUES('{novoPassageiro.Cpf}'," + $"'{novoPassageiro.Nome}','{novoPassageiro.DataNascimento}','{novoPassageiro.Sexo}','{novoPassageiro.DataUltimaCompra}','{novoPassageiro.DataCadastro}','{novoPassageiro.Situacao}');";
-                bd = new BD();
+               
                 bd.InsertDado(insert);
                 Console.WriteLine("\nPassageiro Cadastrado com Sucesso!");
                 Pausa();
@@ -2754,7 +2754,7 @@ namespace AeroportoBD
                 novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, cnpj);
 
                 string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,UltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{novaAeronave.Cnpj}');";
-                bd = new BD();
+                
                 bd.InsertDado(insert);
                 Console.WriteLine("\nCadastro Realizado com Sucesso!");
             }
@@ -2793,9 +2793,7 @@ namespace AeroportoBD
         } // OK
         #endregion
 
-        #region Aeroporto
-
-        #endregion
+     
 
         #region Exceções
         static void TelaInicialCpfRestritos()

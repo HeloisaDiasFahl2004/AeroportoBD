@@ -28,10 +28,11 @@ namespace AeroportoBD
         #region Insert Update Dados
         public void InsertDado(String insert)
         {
+            conn.Open();
             try
             {
 
-                conn.Open();
+              
                 SqlCommand cmdINSERT = new SqlCommand(insert, conn);
                 cmdINSERT.Connection = conn;
                 cmdINSERT.ExecuteNonQuery();
@@ -52,9 +53,10 @@ namespace AeroportoBD
 
         public void UpdateDado( String update)
         {
+            conn.Open();
             try
             {
-                // conexaosql.Open();
+              
                 SqlCommand cmdUPDATE = new SqlCommand(update, conn);
                 cmdUPDATE.Connection = conn;
                 cmdUPDATE.ExecuteNonQuery();
@@ -70,9 +72,10 @@ namespace AeroportoBD
 
         public void DeleteDado( String update)
         {
+            conn.Open();
             try
             {
-                conn.Open();
+             
                 SqlCommand cmdDELETE = new SqlCommand(update, conn);
                 cmdDELETE.Connection = conn;
                 cmdDELETE.ExecuteNonQuery();
@@ -130,11 +133,12 @@ namespace AeroportoBD
         }
         public CompanhiaAerea SelectCompanhiaAereaVER( String selectC)
         {
+            conn.Open();
             CompanhiaAerea compAtual = new CompanhiaAerea();
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectC, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
                
@@ -169,12 +173,12 @@ namespace AeroportoBD
         #region Passageiro
         public String SelectPassageiroVerUm( String selectP)
         {
+            conn.Open();
             String s = "";
             try
             {
-                //conexaosql.Open();
+                
                 SqlCommand cmdSELECT = new SqlCommand(selectP,conn);
-                conn.Open();
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
                
@@ -206,10 +210,11 @@ namespace AeroportoBD
         } // OK
         public String SelectPassageiroVizualizarTodos( String selectP)
         {
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectP, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -242,10 +247,10 @@ namespace AeroportoBD
         }
         public bool CpfExiste(String selectPass)
         {
-
+            conn.Open();
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectPass, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -272,12 +277,13 @@ namespace AeroportoBD
         }
         public Passageiro SelectPassageiroVER( String selectPassageiro)
         {
+
+            conn.Open();
             Passageiro passageiroAtual = new Passageiro();
             String s = "";
             try
             {
 
-                //  conexaosql.Open();
                 SqlCommand cmdSELECT = new SqlCommand(selectPassageiro, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -317,10 +323,11 @@ namespace AeroportoBD
         #region Aeroporto
         public String SelectIATA(String selectAEROPORTO) //tenho q abrir a conexao
         {
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
+              
                 SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO,conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -346,11 +353,12 @@ namespace AeroportoBD
         }
         public Aeroporto SelectIATAdestino( String selectAEROPORTO)
         {
+
+            conn.Open();
             Aeroporto dest = new Aeroporto();
             String s = "";
             try
             {
-                //conexaosql.Open();
                 SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO, conn);
 
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
@@ -379,10 +387,11 @@ namespace AeroportoBD
         #region Exceções
         public String SelectRestrito(String selectPR)
         {
+
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
                 SqlCommand cmdSELECT = new SqlCommand(selectPR, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -408,11 +417,12 @@ namespace AeroportoBD
         }
         public Restrito SelectRestritoVER(String selectPR)
         {
+            conn.Open();
             Restrito r = null;
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectPR, conn);
 
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
@@ -436,10 +446,11 @@ namespace AeroportoBD
         }
         public String SelectBloqueado( String selectBloq)
         {
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectBloq, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -468,10 +479,11 @@ namespace AeroportoBD
         #region Aeronave
         public String SelectAeronave( String selectA)
         {
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectA, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -503,11 +515,12 @@ namespace AeroportoBD
         }    //OK
         public Aeronave SelectAeronaveVER( String selectA)
         {
+
+            conn.Open();
             Aeronave aeronaveAtual = new Aeronave();
             String s = "";
             try
             {
-                conn.Open();
                 SqlCommand cmdSELECT = new SqlCommand(selectA, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -543,10 +556,11 @@ namespace AeroportoBD
         #region Venda
         public String SelectVenda(String selectVenda)
         {
+
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
                 SqlCommand cmdSELECT = new SqlCommand(selectVenda, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -576,10 +590,11 @@ namespace AeroportoBD
         }  //OK
         public String SelectPassagem( String selectR)
         {
+            conn.Open();
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectR, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -612,11 +627,12 @@ namespace AeroportoBD
 
         public Passagem VerPassagem( String selectR)
         {
+            conn.Open();
             Passagem pass = null;
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectR, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -680,11 +696,12 @@ namespace AeroportoBD
         #region VOO
         public String SelectVoo( String selectVOO)
         {
+            conn.Open();
             String s = "";
             try
             {
                 
-                conn.Open();
+              
                 SqlCommand cmdSELECT = new SqlCommand(selectVOO, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
@@ -703,26 +720,27 @@ namespace AeroportoBD
                     }
                     Console.WriteLine("Fim da Impressão!");
                 
-               
-                conn.Close();
+            
 
             }
             catch (SqlException)
             {
                 Console.Write("Não foi possível imprimir");
-                conn.Close();
+              
             }
-          
+
+            conn.Close();
             Console.ReadKey();
             return s;
         } // OK
         public Voo VerVoo(String selectVOO)
         {
+            conn.Open();
             Voo v = null;
             String s = "";
             try
             {
-                conn.Open();
+               
                 SqlCommand cmdSELECT = new SqlCommand(selectVOO, conn);
                 SqlDataReader reader = null;
                 using (reader = cmdSELECT.ExecuteReader())
@@ -752,11 +770,11 @@ namespace AeroportoBD
         #region Passagem
         public int ContaP( String selectV)
         {
-
+            conn.Open();
             int s = 0;
             try
             {
-                conn.Open();
+              
                 SqlCommand cmdSELECT = new SqlCommand(selectV, conn);
                 SqlDataReader reader = cmdSELECT.ExecuteReader();
 
