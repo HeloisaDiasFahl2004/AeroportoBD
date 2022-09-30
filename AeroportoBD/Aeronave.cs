@@ -14,8 +14,11 @@ namespace AeroportoBD
         public DateTime DataCadastro { get; set; }
         public char Situacao { get; set; }
         public string Cnpj { get; set; }
-      
 
+        public Aeronave()
+        {
+
+        }
         public Aeronave(string inscricao, int capacidade,  DateTime UltimaVenda, DateTime Cadastro, char situacao, string cnpj)
         {
             this.Inscricao = inscricao;

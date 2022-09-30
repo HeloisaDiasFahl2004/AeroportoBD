@@ -9,6 +9,10 @@ namespace AeroportoBD
     internal class Aeroporto
     {
         public string IATA { get; set; }
+        public Aeroporto()
+        {
+
+        }
         public Aeroporto(string iata)
         {
             this.IATA = iata;
