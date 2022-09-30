@@ -103,8 +103,8 @@ namespace AeroportoBD
             {
 
 
-                SqlCommand cmdSELECT = new SqlCommand(selectC,conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTC = new SqlCommand(selectC,conn);
+                SqlDataReader reader = cmdSELECTC.ExecuteReader();
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS COMPANHIA AEREA <<<");
                     Console.WriteLine("\nCNPJ  \t\tRazão Social \t\t\t\t\t Data Abertura \t Data Último Voo\tDataCadastro \tSituacao \n");
                     while (reader.Read()) // enquanto tiver leitura para fazer
@@ -139,8 +139,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectC, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTCA = new SqlCommand(selectC, conn);
+                SqlDataReader reader = cmdSELECTCA.ExecuteReader();
                
 
                     while (reader.Read()) // enquanto tiver leitura para fazer
@@ -173,27 +173,27 @@ namespace AeroportoBD
         #region Passageiro
         public String SelectPassageiroVerUm( String selectP)
         {
-            conn.Open();
+           // conn.Open();
             String s = "";
             try
             {
                 
-                SqlCommand cmdSELECT = new SqlCommand(selectP,conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTP = new SqlCommand(selectP,conn);
 
-               
+
+              SqlDataReader  readerP = cmdSELECTP.ExecuteReader();
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
                     Console.WriteLine("\nCPF\tNome\tData Nascimento\tSexo\tData Última Compra\tDataCadastro\tSituacao\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    while (readerP.Read()) // enquanto tiver leitura para fazer
                     {
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetString(3));
-                        Console.Write("{0}\t", reader.GetDateTime(4).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetDateTime(5).ToShortDateString());
-                        Console.WriteLine("{0}\t", reader.GetString(6));
+                        s = readerP.GetString(0);
+                        Console.Write("{0}\t", readerP.GetString(0));
+                        Console.Write("{0}\t", readerP.GetString(1));
+                        Console.Write("{0}\t", readerP.GetDateTime(2).ToShortDateString());
+                        Console.Write("{0}\t", readerP.GetString(3));
+                        Console.Write("{0}\t", readerP.GetDateTime(4).ToShortDateString());
+                        Console.Write("{0}\t", readerP.GetDateTime(5).ToShortDateString());
+                        Console.WriteLine("{0}\t", readerP.GetString(6));
 
                     }
                     Console.WriteLine("Fim da Impressão!");
@@ -210,13 +210,13 @@ namespace AeroportoBD
         } // OK
         public String SelectPassageiroVizualizarTodos( String selectP)
         {
-            conn.Open();
+              conn.Open();
             String s = "";
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectP, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTPT = new SqlCommand(selectP, conn);
+                SqlDataReader reader = cmdSELECTPT.ExecuteReader();
 
                
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
@@ -251,8 +251,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectPass, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTCE = new SqlCommand(selectPass, conn);
+                SqlDataReader reader = cmdSELECTCE.ExecuteReader();
 
                
 
@@ -284,8 +284,8 @@ namespace AeroportoBD
             try
             {
 
-                SqlCommand cmdSELECT = new SqlCommand(selectPassageiro, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTp = new SqlCommand(selectPassageiro, conn);
+                SqlDataReader reader = cmdSELECTp.ExecuteReader();
 
                 
 
@@ -328,8 +328,8 @@ namespace AeroportoBD
             try
             {
               
-                SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO,conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTI = new SqlCommand(selectAEROPORTO,conn);
+                SqlDataReader reader = cmdSELECTI.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AEROPORTO <<<");
                     Console.WriteLine("\tIATA\n");
@@ -359,9 +359,9 @@ namespace AeroportoBD
             String s = "";
             try
             {
-                SqlCommand cmdSELECT = new SqlCommand(selectAEROPORTO, conn);
+                SqlCommand cmdSELECTD = new SqlCommand(selectAEROPORTO, conn);
 
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlDataReader reader = cmdSELECTD.ExecuteReader();
 
                 while (reader.Read()) // enquanto tiver leitura para fazer
                     {
@@ -392,8 +392,8 @@ namespace AeroportoBD
             String s = "";
             try
             {
-                SqlCommand cmdSELECT = new SqlCommand(selectPR, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTR = new SqlCommand(selectPR, conn);
+                SqlDataReader reader = cmdSELECTR.ExecuteReader();
 
               
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
@@ -423,9 +423,9 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectPR, conn);
+                SqlCommand cmdSELECTRVER = new SqlCommand(selectPR, conn);
 
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlDataReader reader = cmdSELECTRVER.ExecuteReader();
 
                 while (reader.Read()) // enquanto tiver leitura para fazer,faz
                     {
@@ -451,8 +451,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectBloq, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTB = new SqlCommand(selectBloq, conn);
+                SqlDataReader reader = cmdSELECTB.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
                     Console.WriteLine("\nCNPJ\n");
@@ -484,8 +484,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectA, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTAero = new SqlCommand(selectA, conn);
+                SqlDataReader reader = cmdSELECTAero.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS AERONAVE <<<");
                     Console.WriteLine("\nInscrição\t\tCapacidade\tData Ultima Venda\tData Cadastro\t\tSituacao\tCNPJ\n");
@@ -521,8 +521,8 @@ namespace AeroportoBD
             String s = "";
             try
             {
-                SqlCommand cmdSELECT = new SqlCommand(selectA, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTAeronave = new SqlCommand(selectA, conn);
+                SqlDataReader reader = cmdSELECTAeronave.ExecuteReader();
 
 
                 while (reader.Read()) // enquanto tiver leitura para fazer
@@ -561,8 +561,8 @@ namespace AeroportoBD
             String s = "";
             try
             {
-                SqlCommand cmdSELECT = new SqlCommand(selectVenda, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTVenda = new SqlCommand(selectVenda, conn);
+                SqlDataReader reader = cmdSELECTVenda.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VENDA <<<");
                     Console.WriteLine("\nID Venda\tData Venda\tValor Total\tCPF\n");
@@ -595,8 +595,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectR, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTPassagem = new SqlCommand(selectR, conn);
+                SqlDataReader reader = cmdSELECTPassagem.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS RESERVADAS<<<");
                     Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao\n");
@@ -633,8 +633,8 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectR, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTpassagem = new SqlCommand(selectR, conn);
+                SqlDataReader reader = cmdSELECTpassagem.ExecuteReader();
 
 
                 while (reader.Read()) // enquanto tiver leitura para fazer, faz
@@ -663,8 +663,8 @@ namespace AeroportoBD
             try
             {
                 conn.Open();
-                SqlCommand cmdSELECT = new SqlCommand(selectVP, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTVP = new SqlCommand(selectVP, conn);
+                SqlDataReader reader = cmdSELECTVP.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS ITEM VENDA <<<");
                     Console.WriteLine("\nID Item Venda\tID Venda\tValorUnitario\n");
@@ -702,8 +702,8 @@ namespace AeroportoBD
             {
                 
               
-                SqlCommand cmdSELECT = new SqlCommand(selectVOO, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTvoo = new SqlCommand(selectVOO, conn);
+                SqlDataReader reader = cmdSELECTvoo.ExecuteReader();
 
                 Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VOO <<<");
                     Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos\tSituacao\n");
@@ -741,9 +741,9 @@ namespace AeroportoBD
             try
             {
                
-                SqlCommand cmdSELECT = new SqlCommand(selectVOO, conn);
+                SqlCommand cmdSELECTVOO = new SqlCommand(selectVOO, conn);
                 SqlDataReader reader = null;
-                using (reader = cmdSELECT.ExecuteReader())
+                using (reader = cmdSELECTVOO.ExecuteReader())
                 {
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
@@ -775,8 +775,8 @@ namespace AeroportoBD
             try
             {
               
-                SqlCommand cmdSELECT = new SqlCommand(selectV, conn);
-                SqlDataReader reader = cmdSELECT.ExecuteReader();
+                SqlCommand cmdSELECTContaP = new SqlCommand(selectV, conn);
+                SqlDataReader reader = cmdSELECTContaP.ExecuteReader();
 
 
                 while (reader.Read()) // enquanto tiver leitura para fazer, faz
