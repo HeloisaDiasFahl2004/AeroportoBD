@@ -83,46 +83,7 @@ namespace AeroportoBD
         #region GerarIDPASSAGEM
         static void GeradorIdPassagens(int capacidadeassentos, string idVoo, float valor)
         {
-            try
-            {
-                Random random = new Random();
-
-                string id = "";
-                bool encontrado;
-
-                for (int i = 0; i < capacidadeassentos; i++)
-                {
-                    encontrado = false;
-
-                    id = random.Next(1001, 9999).ToString();
-
-
-
-                    if (!string.IsNullOrEmpty(bd.SelectPassagem(id)))
-                    {
-                        encontrado = true;
-                        i--;
-
-                    }
-
-                    if (encontrado == false)
-                    {
-                        Passagem passagem = new Passagem(id, idVoo, System.DateTime.Now, valor, 'L');
-                        string adcPassagem = $"INSERT INTO Passagem(IDPASSAGEM, IDVOO,DataUltimaOperacao,ValorUnitario,Situacao) VALUES('{'P' + 'A' + id}'," + $"'{idVoo}','{passagem.DataUltimaOperacao}','{passagem.ValorUnitario}','{passagem.Situacao}');";
-                        bd.InsertDado(adcPassagem);
-
-                    }
-
-
-                }
-
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Erro, não foi possível gerar ID's das passagens!");
-                Pausa();
-
-            }
+           
         }
         #endregion 
 
@@ -1405,7 +1366,7 @@ namespace AeroportoBD
                             if (!string.IsNullOrEmpty(bd.SelectIATA( SelectAeroporto)))
                             {
                                 encontrado = true;
-                                Console.Write("Aeroporto já cadastrado!\n");
+                                Console.Write("Aeroporto já cadastrado! \n");
 
                             }
                             if (encontrado == true)
@@ -1695,7 +1656,7 @@ namespace AeroportoBD
                             string idvoo = Console.ReadLine().ToUpper();
 
                             encontrado = false;
-                            string selectIdVOO = $"SELECT INSCRICAO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo WHERE IDVOO='{idvoo}'";
+                            string selectIdVOO = $"SELECT IDVOO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao FROM Voo WHERE IDVOO='{idvoo}'";
                             if (!string.IsNullOrEmpty(bd.SelectVoo(selectIdVOO)))
                             {
                                 return idvoo;
@@ -2056,19 +2017,13 @@ namespace AeroportoBD
 
                 Voo novoVoo = new Voo(idVoo, destino, dataVoo, System.DateTime.Now, 0, 'A');
 
-                string insertVOO = $"INSERT INTO VOO(IDVOO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao) VALUES('{idVoo}'," + $"'{destino}','{dataVoo}','{novoVoo.DataCadastro}','{novoVoo.QuantidadeAssentosOcupados}','{novoVoo.Situacao}');";
+                string insertVOO = $"INSERT INTO VOO(IDVOO,IATA,DataVoo,DataCadastro,QuantidadeAssentosOcupados,Situacao) VALUES('{idVoo}'," + $"'{destino}','{dataVoo}','{novoVoo.DataCadastro}','{novoVoo.QuantidadeAssentosOcupados}','{novoVoo.Situacao}');" +
+                $"EXEC dbo.CadastroPassagens {valor};";
                 bd.InsertDado(insertVOO);
 
-                string buscaVoo = $"SELECT * FROM VOO WHERE IDVOO ='{idVoo}'  AND INSCRICAO='{idAeronave}'";
+                string buscaVoo = $"SELECT * FROM VOO WHERE IDVOO ='{idVoo}'  AND INSCRICAO='{idAeronave}';";
                 bd.SelectVoo( buscaVoo);
-
-                string aero = $"SELECT * FROM Aeronave WHERE INSCRICAO='{idAeronave}'";
-                a = bd.SelectAeronaveVER(aero);
-                GeradorIdPassagens(a.Capacidade, idVoo, valor);
-
-
-
-                Console.WriteLine("\nCadastro Realizado com Sucesso!");
+                Console.WriteLine("Voo cadastrado com sucesso!");
                 Pausa();
                 TelaOpcoesCompanhiaAerea(compAtivo);
             }
@@ -2099,10 +2054,10 @@ namespace AeroportoBD
             switch (opc)
             {
                 case 0:
-                    TelaVendas();
+                    TelaInicial();
                     break;
                 case 1:
-                    Console.Clear();
+                    
                     string idvoo = ValidarEntrada("idvoo");
                     if (idvoo == null) TelaVoosDisponiveis();
                     TelaDescricaoVoo(idvoo);
@@ -2119,7 +2074,7 @@ namespace AeroportoBD
 
 
             string voo = $"SELECT * FROM Voo WHERE IDVOO='{idvoo}'";
-            bd.VerVoo(voo);
+           bd.VerVoo(voo);
 
             Console.WriteLine("\n----------------------------------------------------------------------------------------------");
             Console.WriteLine("1 - Comprar: ");

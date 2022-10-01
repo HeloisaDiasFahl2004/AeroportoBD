@@ -63,7 +63,7 @@ namespace AeroportoBD
                 if (e.Number != 2627) // chave duplicada
                     throw;
 
-                Console.WriteLine("CPF/CNPJ já existente");
+                Console.WriteLine("CPF / CNPJ / ID já existente");
                 Console.ReadKey();
             }
           
@@ -779,7 +779,7 @@ namespace AeroportoBD
                 {
 
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VOO <<<");
-                    Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos\tSituacao\n");
+                    Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos Ocupados\tSituacao\n");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
@@ -821,7 +821,7 @@ namespace AeroportoBD
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
-                        v = new Voo(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetInt32(4), reader.GetChar(5));
+                        v = new Voo(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDateTime(3), reader.GetInt32(4), char.Parse(reader.GetString(5)));
                     }
 
                 }
