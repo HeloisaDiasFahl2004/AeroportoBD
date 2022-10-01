@@ -1202,21 +1202,19 @@ namespace AeroportoBD
                                                 Thread.Sleep(200);
 
                                                 string cnpj = ValidarEntrada("cnpjexiste");
-                                                string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}'AND CNPJ='{cnpj};";
+                                                string BuscaAero = $"SELECT Inscricao,Capacidade,UltimaVenda, DataCadastro,Situacao,Cnpj FROM AERONAVE WHERE INSCRICAO='{idaeronave}'AND CNPJ='{cnpj}';";
                                                 if (!string.IsNullOrEmpty(bd.SelectAeronave(BuscaAero)))
                                                 {
                                                     encontrado = true;
+                                                    Console.WriteLine("Essa Aeronave já possui cadastro!");
+                                                    retornar = PausaMensagem();
                                                     break;
                                                 }
                                                 if (encontrado == false)
                                                 {
                                                     return idaeronave;
                                                 }
-                                                else
-                                                {
-                                                    Console.WriteLine("Essa Aeronave já possui cadastro!");
-                                                    retornar = PausaMensagem();
-                                                }
+                                            
                                             }
                                             else
                                             {
@@ -2729,13 +2727,12 @@ namespace AeroportoBD
             Aeronave novaAeronave;
 
 
-            string cnpj = ValidarEntrada("cnpjexiste");
-
+         
             idAeronave = ValidarEntrada("idaeronave");
             if (idAeronave == null) TelaOpcoesCompanhiaAerea(compAtivo);
-            string Aero = $"Select * from Aeronave where INSCRICAO='{idAeronave}'";
-            Aeronave a = bd.SelectAeronaveVER(Aero);
-            if (a != null)
+            string Aero = $"Select * from Aeronave where INSCRICAO='{idAeronave}';";
+            novaAeronave = bd.SelectAeronaveCadastrar(Aero);
+            if (novaAeronave != null)
             {
                 Console.WriteLine("ID já cadastrado!");
                  //está cadastrada, para  o cadastro
@@ -2751,7 +2748,7 @@ namespace AeroportoBD
                 if (situacao.Equals(null)) TelaOpcoesCompanhiaAerea(compAtivo);
 
                 Console.ReadKey();
-                novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, cnpj);
+                novaAeronave = new Aeronave(idAeronave, capacidade, System.DateTime.Now, System.DateTime.Now, situacao, compAtivo.Cnpj);
 
                 string insert = $"INSERT INTO Aeronave(INSCRICAO,Capacidade,UltimaVenda,DataCadastro,Situacao,CNPJ) VALUES('{novaAeronave.Inscricao}'," + $"'{novaAeronave.Capacidade}','{novaAeronave.UltimaVenda}','{novaAeronave.DataCadastro}','{novaAeronave.Situacao}','{novaAeronave.Cnpj}');";
                 

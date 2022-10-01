@@ -544,10 +544,10 @@ namespace AeroportoBD
             Console.ReadKey();
             return s;
         }    //OK
-        public Aeronave SelectAeronaveVER( String selectA)
+        public Aeronave SelectAeronaveCadastrar( String selectA)
         {
             var conn = BuscarConexao();
-            Aeronave aeronaveAtual = new Aeronave();
+            Aeronave aeronaveAtual = null;
             String s = "";
             try
             {
@@ -579,8 +579,44 @@ namespace AeroportoBD
 
             Console.ReadKey();
             return aeronaveAtual;
-        }
+        } //cadastrar aeronave
 
+        public Aeronave SelectAeronaveVER(String selectA)
+        {
+            var conn = BuscarConexao();
+            Aeronave aeronaveAtual = new();
+            String s = "";
+            try
+            {
+                SqlCommand cmdSELECTAeronave = new SqlCommand(selectA, conn);
+                using (SqlDataReader reader = cmdSELECTAeronave.ExecuteReader())
+                {
+
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer
+                    {
+                        s = reader.GetString(0);
+                        aeronaveAtual.Inscricao = reader.GetString(0);
+                        aeronaveAtual.Capacidade = reader.GetInt32(1);
+                        aeronaveAtual.UltimaVenda = reader.GetDateTime(2);
+                        aeronaveAtual.DataCadastro = reader.GetDateTime(3);
+                        aeronaveAtual.Situacao = char.Parse(reader.GetString(4));
+                        aeronaveAtual.Cnpj = reader.GetString(5);
+
+                    }
+                }
+
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+
+
+            Console.ReadKey();
+            return aeronaveAtual;
+        }
 
         #endregion
 
