@@ -32,10 +32,6 @@ namespace AeroportoBD
         {
             return "\nDADOS PASSAGEIRO: \nNome: " + Nome + "\nCPF: " + Cpf + "\nData Nascimento: " + DataNascimento.ToString("dd/MM/yyyy") + "\nSexo: " + Sexo + "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nData Última Compra: " + DataUltimaCompra.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + Situacao;
         }
-      /*  public string ObterDados() // Arquivo Texto
-        {
-            return Cpf + Nome + DataNascimento.ToString("ddMMyyyy") + Sexo + DataUltimaCompra.ToString("ddMMyyyyHHmm") + DataCadastro.ToString("ddMMyyyyHHmm") + Situacao;
-        }
-      */
+ 
     }
 }

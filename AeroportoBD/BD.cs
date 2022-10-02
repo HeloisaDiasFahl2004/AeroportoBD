@@ -63,7 +63,7 @@ namespace AeroportoBD
                 if (e.Number != 2627) // chave duplicada
                     throw;
 
-                Console.WriteLine("CPF / CNPJ / ID já existente");
+                Console.WriteLine("CPF / CNPJ  já existente");
                 Console.ReadKey();
             }
           
@@ -99,7 +99,7 @@ namespace AeroportoBD
                 SqlCommand cmdDELETE = new SqlCommand(update, conn);
                 cmdDELETE.Connection = conn;
                 cmdDELETE.ExecuteNonQuery();
-                Console.WriteLine("Cpf Removido com sucesso!");
+                Console.WriteLine("CPF/CNPJ Removido com sucesso!");
 
 
             }
@@ -667,17 +667,17 @@ namespace AeroportoBD
                 using (SqlDataReader reader = cmdSELECTPassagem.ExecuteReader())
                 {
 
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS RESERVADAS<<<");
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS HISTÓRICO<<<"); // Reservadas / Pagas
                     Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao\n");
                     while (reader.Read()) // enquanto tiver leitura para fazer, faz
                     {
 
-                        s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
+                       // s = reader.GetString(0);
+                        Console.Write("{0}\t", reader.GetInt32(0));
                         Console.Write("{0}\t", reader.GetString(1));
                         Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetString(3));
-                        Console.WriteLine("{0}\t", reader.GetString(4));
+                        Console.Write("{0}\t", reader.GetDouble(3));
+                        Console.WriteLine("{0}\t", char.Parse(reader.GetString(4)));
 
                     }
                     Console.WriteLine("Fim da Impressão!");
@@ -697,8 +697,8 @@ namespace AeroportoBD
         public Passagem VerPassagem( String selectR)
         {
             var conn = BuscarConexao();
-            Passagem pass = null;
-            String s = "";
+            Passagem pass = new();
+           
             try
             {
                
@@ -710,8 +710,7 @@ namespace AeroportoBD
                     while (reader.Read()) // enquanto tiver leitura para fazer, faz
                     {
 
-                        s = reader.GetString(0);
-                        pass = new Passagem(reader.GetString(0), reader.GetString(1), reader.GetDateTime(2), reader.GetFloat(3), reader.GetChar(4));
+                        pass = new Passagem(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDouble(3),char.Parse(reader.GetString(4)));
 
 
                     }
@@ -809,7 +808,7 @@ namespace AeroportoBD
         public Voo VerVoo(String selectVOO)
         {
             var conn = BuscarConexao();
-            Voo v = null;
+            Voo v = new();
             String s = "";
             try
             {

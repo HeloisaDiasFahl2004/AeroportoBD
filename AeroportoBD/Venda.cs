@@ -10,9 +10,9 @@ namespace AeroportoBD
     {
         public string IDVenda { get; set; }
         public DateTime DataVenda { get; set; }
-        public float ValorTotal { get; set; }
+        public double ValorTotal { get; set; }
         public string CPF { get; set; }
-        public Venda(string idVenda, DateTime dataVenda, float valorTotal, string cpf)
+        public Venda(string idVenda, DateTime dataVenda, double valorTotal, string cpf)
         {  this.IDVenda = idVenda;
             this.DataVenda = dataVenda;
             this.ValorTotal = valorTotal;
@@ -22,11 +22,7 @@ namespace AeroportoBD
         {
             return "\nDADOS VENDA: \nID Venda: " + IDVenda + "\nData Venda: " + DataVenda.ToString("dd/MM/yyyy HH:mm") +  "\nValor Total: " + ValorTotal+ "\nPassageiro(CPF): " + CPF ;
         }
-       /* public string ObterDados()
-        {
-            return IDVenda + DataVenda.ToString("ddMMyyyyHHmm") + Passageiro + ValorConverter(ValorTotal);
-        }
-       */
+      
         static public string ValorConverter(float valor)
         {
             try

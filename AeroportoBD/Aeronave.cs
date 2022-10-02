@@ -37,9 +37,6 @@ namespace AeroportoBD
 
             return "\nDADOS AERONAVE: \nInscrição: " + Inscricao + "\nCapacidade: " + Capacidade +  "\nData Cadastro: " + DataCadastro.ToString("dd/MM/yyyy HH:mm") + "\nÚltima Venda: " + UltimaVenda.ToString("dd/MM/yyyy HH:mm") + "\nSituação: " + s + "\nCNPJ: " + Cnpj;
         }
-        /*  public string ObterDados()
-          {
-              return Inscricao + Capacidade + string.Format("{0:000}", AssentosOcupados) + UltimaVenda.ToString("ddMMyyyyHHmm") + DataCadastro.ToString("ddMMyyyyHHmm") + Situacao + Cnpj + RazaoSocial;
-          }*/
+        
     }
 }

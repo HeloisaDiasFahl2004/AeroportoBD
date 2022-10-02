@@ -8,12 +8,16 @@ namespace AeroportoBD
 {
     internal class Passagem
     {
-        public string IDPassagem { get; set; }
+        public int IDPassagem { get; set; }
         public string IDVoo { get; set; } //posso ter o mesmo id de passagem com id do voo diferente
         public DateTime DataUltimaOperacao { get; set; }
-        public float ValorUnitario { get; set; }
+        public double ValorUnitario { get; set; }
         public char Situacao { get; set; }
-        public Passagem(string idPassagem, string idVoo, DateTime dataUltimaOperacao, float valorUni, char Situacao)
+        public Passagem()
+        {
+
+        }
+        public Passagem(int idPassagem, string idVoo, DateTime dataUltimaOperacao, double valorUni, char Situacao)
         {
             this.IDPassagem = idPassagem;
             this.IDVoo = idVoo;
@@ -25,10 +29,7 @@ namespace AeroportoBD
         {
             return "\nDADOS PASSAGEM: \nID Passagem: " + IDPassagem + "\nID VOO: " + IDVoo + "\nData Última Operação: " + DataUltimaOperacao.ToString("dd/MM/yyyy HH:mm") + "\nValor: " + ValorUnitario + "\nSituação: " + Situacao;
         }
-        /*  public string ObterDados()
-          {
-              return IDPassagem + IDVoo + DataUltimaOperacao.ToString("ddMMyyyyHHmm") + ValorConverter(Valor) + Situacao;
-          }*/
+      
         public string ValorConverter(float valor)
         {
             try

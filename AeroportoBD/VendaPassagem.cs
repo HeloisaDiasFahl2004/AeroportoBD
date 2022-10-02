@@ -10,11 +10,11 @@ namespace AeroportoBD
     {
         public string IDItemVenda { get; set; }
         public string IDVenda { get; set; }
-        public float ValorUnitario { get; set; }
+        public double ValorUnitario { get; set; }
       
        
 
-        public VendaPassagem(string idItemVenda, string idVenda, float valorUnitario)
+        public VendaPassagem(string idItemVenda, string idVenda, double valorUnitario)
         {
             this.IDItemVenda = idItemVenda;
             this.IDVenda = idVenda;
@@ -26,10 +26,7 @@ namespace AeroportoBD
         {
             return "\nDADOS ITEM VENDA: \nID Item Venda: " + IDItemVenda + "\nID Venda: " + IDVenda;
         }
-      /*  public string ObterDados()
-        {
-            return IDItemVenda + IDPassagem + ValorConverter(ValorUnitario) + Cpf + Nome;
-        }*/
+
         static public string ValorConverter(float valor)
         {
             try
