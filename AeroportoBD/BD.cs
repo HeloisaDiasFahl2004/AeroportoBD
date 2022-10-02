@@ -35,24 +35,24 @@ namespace AeroportoBD
                 conn.Open();
                 return conn;
             }
-          if(conn.State == System.Data.ConnectionState.Open)
+            if (conn.State == System.Data.ConnectionState.Open)
             {
                 return conn;
             }
-          conn.Open();
+            conn.Open();
             return conn;
-           
+
         }
         #endregion
 
-        #region Insert Update Dados
+        #region Insert Update Delete Dados
         public void InsertDado(String insert)
         {
-          var conn=  BuscarConexao();
+            var conn = BuscarConexao();
             try
             {
 
-              
+
                 SqlCommand cmdINSERT = new SqlCommand(insert, conn);
                 cmdINSERT.Connection = conn;
                 cmdINSERT.ExecuteNonQuery();
@@ -66,17 +66,17 @@ namespace AeroportoBD
                 Console.WriteLine("CPF / CNPJ  já existente");
                 Console.ReadKey();
             }
-          
+
 
             Console.ReadKey();
         } //OK
 
-        public void UpdateDado( String update)
+        public void UpdateDado(String update)
         {
-          var conn =  BuscarConexao();
+            var conn = BuscarConexao();
             try
             {
-              
+
                 SqlCommand cmdUPDATE = new SqlCommand(update, conn);
                 cmdUPDATE.Connection = conn;
                 cmdUPDATE.ExecuteNonQuery();
@@ -86,16 +86,16 @@ namespace AeroportoBD
             {
                 Console.WriteLine("Não foi possível atualizar dado!");
             }
-         
+
             Console.ReadKey();
         } //OK
 
-        public void DeleteDado( String update)
+        public void DeleteDado(String update)
         {
-          var conn=  BuscarConexao();
+            var conn = BuscarConexao();
             try
             {
-             
+
                 SqlCommand cmdDELETE = new SqlCommand(update, conn);
                 cmdDELETE.Connection = conn;
                 cmdDELETE.ExecuteNonQuery();
@@ -107,7 +107,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível Deletar Dado!");
             }
-           
+
 
             Console.ReadKey();
         }
@@ -123,11 +123,11 @@ namespace AeroportoBD
             {
 
 
-                SqlCommand cmdSELECTC = new SqlCommand(selectC,conn);
+                SqlCommand cmdSELECTC = new SqlCommand(selectC, conn);
                 using (SqlDataReader reader = cmdSELECTC.ExecuteReader())
                 {
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS COMPANHIA AEREA <<<");
-                    Console.WriteLine("\nCNPJ  \t\tRazão Social \t\t\t\t\t Data Abertura \t Data Último Voo\tDataCadastro \tSituacao \n");
+                    Console.WriteLine("\nCNPJ  \t\tRazão Social \t\t\t\t\t Data Abertura \t Data Último Voo\tDataCadastro \tSituacao ");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
@@ -136,7 +136,7 @@ namespace AeroportoBD
                         Console.Write("{0} ", reader.GetDateTime(2).ToShortDateString());
                         Console.Write("  {0}\t", reader.GetDateTime(3).ToShortDateString());
                         Console.Write("\t{0}\t", reader.GetDateTime(4).ToShortDateString());
-                        Console.WriteLine("\t{0}", reader.GetString(5));
+                        Console.WriteLine("{0}", reader.GetString(5));
 
                         Console.WriteLine("\n");
                     }
@@ -147,18 +147,18 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             Console.ReadKey();
             return s;
         }
-        public CompanhiaAerea SelectCompanhiaAereaVER( String selectC)
+        public CompanhiaAerea SelectCompanhiaAereaVER(String selectC)
         {
             var conn = BuscarConexao();
             CompanhiaAerea compAtual = new CompanhiaAerea();
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTCA = new SqlCommand(selectC, conn);
                 using (SqlDataReader reader = cmdSELECTCA.ExecuteReader())
                 {
@@ -183,7 +183,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
 
             Console.ReadKey();
             return compAtual;
@@ -192,29 +192,29 @@ namespace AeroportoBD
         #endregion
 
         #region Passageiro
-        public String SelectPassageiroVerUm( String selectP)
+        public String SelectPassageiroVerUm(String selectP)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-                
-                SqlCommand cmdSELECTP = new SqlCommand(selectP,conn);
+
+                SqlCommand cmdSELECTP = new SqlCommand(selectP, conn);
 
 
                 using (SqlDataReader readerP = cmdSELECTP.ExecuteReader())
                 {
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
-                    Console.WriteLine("\nCPF\tNome\tData Nascimento\tSexo\tData Última Compra\tDataCadastro\tSituacao\n");
+                    Console.WriteLine("\nCPF  \t\tNome \t\t\t\t\t Data Nascimento \t Sexo\tData Última Compra\tDataCadastro \tSituacao  ");
                     while (readerP.Read()) // enquanto tiver leitura para fazer
                     {
                         s = readerP.GetString(0);
-                        Console.Write("{0}\t", readerP.GetString(0));
-                        Console.Write("{0}\t", readerP.GetString(1));
-                        Console.Write("{0}\t", readerP.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", readerP.GetString(3));
-                        Console.Write("{0}\t", readerP.GetDateTime(4).ToShortDateString());
-                        Console.Write("{0}\t", readerP.GetDateTime(5).ToShortDateString());
+                        Console.Write("{0} ", readerP.GetString(0));
+                        Console.Write("\t{0}", readerP.GetString(1));
+                        Console.Write("{0}", readerP.GetDateTime(2).ToShortDateString());
+                        Console.Write(" \t{0}", readerP.GetString(3));
+                        Console.Write("\t{0}\t", readerP.GetDateTime(4).ToShortDateString());
+                        Console.Write("\t{0}\t", readerP.GetDateTime(5).ToShortDateString());
                         Console.WriteLine("{0}\t", readerP.GetString(6));
 
                     }
@@ -226,32 +226,32 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-         
+
             Console.ReadKey();
             return s;
         } // OK
-        public String SelectPassageiroVizualizarTodos( String selectP)
+        public String SelectPassageiroVizualizarTodos(String selectP)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTPT = new SqlCommand(selectP, conn);
                 using (SqlDataReader reader = cmdSELECTPT.ExecuteReader())
                 {
 
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS <<<");
-                    Console.WriteLine("\nCPF\tNome\tData Nascimento\tSexo\tData Última Compra\tDataCadastro\tSituacao\n");
+                    Console.WriteLine("\nCPF  \t\tNome \t\t\t\t\t Data Nascimento \t Sexo\tData Última Compra\tDataCadastro \tSituacao  ");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetString(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetString(3));
-                        Console.Write("{0}\t", reader.GetDateTime(4).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetDateTime(5).ToShortDateString());
+                        Console.Write("{0} ", reader.GetString(0));
+                        Console.Write("\t{0}", reader.GetString(1));
+                        Console.Write("{0}", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write(" \t{0}", reader.GetString(3));
+                        Console.Write("\t{0}\t", reader.GetDateTime(4).ToShortDateString());
+                        Console.Write("\t{0}\t", reader.GetDateTime(5).ToShortDateString());
                         Console.WriteLine("{0}\t", reader.GetString(6));
 
                     }
@@ -263,7 +263,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             Console.ReadKey();
             return s;
         }
@@ -272,7 +272,7 @@ namespace AeroportoBD
             var conn = BuscarConexao();
             try
             {
-               
+
                 SqlCommand cmdSELECTCE = new SqlCommand(selectPass, conn);
                 using (SqlDataReader reader = cmdSELECTCE.ExecuteReader())
                 {
@@ -286,18 +286,18 @@ namespace AeroportoBD
                     }
 
                 }
-                
+
 
             }
             catch (SqlException)
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
             Console.ReadKey();
             return false;
         }
-        public Passageiro SelectPassageiroVER( String selectPassageiro)
+        public Passageiro SelectPassageiroVER(String selectPassageiro)
         {
 
             var conn = BuscarConexao();
@@ -335,7 +335,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
 
             Console.ReadKey();
             return passageiroAtual;
@@ -350,8 +350,8 @@ namespace AeroportoBD
             String s = "";
             try
             {
-              
-                SqlCommand cmdSELECTI = new SqlCommand(selectAEROPORTO,conn);
+
+                SqlCommand cmdSELECTI = new SqlCommand(selectAEROPORTO, conn);
                 using (SqlDataReader reader = cmdSELECTI.ExecuteReader())
                 {
 
@@ -371,11 +371,11 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-         
+
             Console.ReadKey();
             return s;
         }
-        public Aeroporto SelectIATAdestino( String selectAEROPORTO)
+        public Aeroporto SelectIATAdestino(String selectAEROPORTO)
         {
 
             var conn = BuscarConexao();
@@ -402,7 +402,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-        
+
             Console.ReadKey();
             return dest;
         }
@@ -438,7 +438,7 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             return s;
         }
         public Restrito SelectRestritoVER(String selectPR)
@@ -448,7 +448,7 @@ namespace AeroportoBD
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTRVER = new SqlCommand(selectPR, conn);
 
                 using (SqlDataReader reader = cmdSELECTRVER.ExecuteReader())
@@ -469,16 +469,16 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             return r;
         }
-        public String SelectBloqueado( String selectBloq)
+        public String SelectBloqueado(String selectBloq)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTB = new SqlCommand(selectBloq, conn);
                 using (SqlDataReader reader = cmdSELECTB.ExecuteReader())
                 {
@@ -488,7 +488,7 @@ namespace AeroportoBD
                     while (reader.Read()) // enquanto tiver leitura para fazer,faz
                     {
                         s = reader.GetString(0);
-                        Console.Write(" {0} ", reader.GetString(0));
+                        Console.WriteLine(" {0} ", reader.GetString(0));
                     }
                     Console.WriteLine("Fim da Impressão!");
 
@@ -500,20 +500,20 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
             return s;
         }
 
         #endregion
 
         #region Aeronave
-        public String SelectAeronave( String selectA)
+        public String SelectAeronave(String selectA)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTAero = new SqlCommand(selectA, conn);
                 using (SqlDataReader reader = cmdSELECTAero.ExecuteReader())
                 {
@@ -540,11 +540,11 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
             Console.ReadKey();
             return s;
         }    //OK
-        public Aeronave SelectAeronaveCadastrar( String selectA)
+        public Aeronave SelectAeronaveCadastrar(String selectA)
         {
             var conn = BuscarConexao();
             Aeronave aeronaveAtual = null;
@@ -568,14 +568,14 @@ namespace AeroportoBD
 
                     }
                 }
-                
+
 
             }
             catch (SqlException)
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
 
             Console.ReadKey();
             return aeronaveAtual;
@@ -620,7 +620,7 @@ namespace AeroportoBD
 
         #endregion
 
-        #region Venda
+        #region Venda / Item da Venda
         public String SelectVenda(String selectVenda)
         {
 
@@ -633,7 +633,7 @@ namespace AeroportoBD
                 {
 
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VENDA <<<");
-                    Console.WriteLine("\nID Venda\tData Venda\tValor Total\tCPF\n");
+                    Console.WriteLine("\nID Venda\tData Venda\tValor Total\tCPF ");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
 
@@ -652,87 +652,18 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             Console.ReadKey();
             return s;
-        }  //OK
-        public String SelectPassagem( String selectR)
+        }  //Venda 
+      
+        public String SelectVendaPassagem(String selectVP)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-               
-                SqlCommand cmdSELECTPassagem = new SqlCommand(selectR, conn);
-                using (SqlDataReader reader = cmdSELECTPassagem.ExecuteReader())
-                {
 
-                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS HISTÓRICO<<<"); // Reservadas / Pagas
-                    Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao\n");
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
-                    {
-
-                       // s = reader.GetString(0);
-                        Console.Write("{0}\t", reader.GetInt32(0));
-                        Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
-                        Console.Write("{0}\t", reader.GetDouble(3));
-                        Console.WriteLine("{0}\t", char.Parse(reader.GetString(4)));
-
-                    }
-                    Console.WriteLine("Fim da Impressão!");
-
-                }
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-         
-            Console.ReadKey();
-            return s;
-        }  //OK
-
-
-        public Passagem VerPassagem( String selectR)
-        {
-            var conn = BuscarConexao();
-            Passagem pass = new();
-           
-            try
-            {
-               
-                SqlCommand cmdSELECTpassagem = new SqlCommand(selectR, conn);
-                using (SqlDataReader reader = cmdSELECTpassagem.ExecuteReader())
-                {
-
-
-                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
-                    {
-
-                        pass = new Passagem(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDouble(3),char.Parse(reader.GetString(4)));
-
-
-                    }
-                }
-                
-
-            }
-            catch (SqlException)
-            {
-                Console.Write("Não foi possível imprimir");
-            }
-          
-            Console.ReadKey();
-            return pass;
-        }
-        public String SelectVendaPassagem( String selectVP)
-        {
-            var conn = BuscarConexao();
-            String s = "";
-            try
-            {
-               
                 SqlCommand cmdSELECTVP = new SqlCommand(selectVP, conn);
                 using (SqlDataReader reader = cmdSELECTVP.ExecuteReader())
                 {
@@ -756,37 +687,37 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-           
+
             Console.ReadKey();
             return s;
-        }
+        } //Item
 
 
         #endregion
 
         #region VOO
-        public String SelectVoo( String selectVOO)
+        public String SelectVoo(String selectVOO)
         {
             var conn = BuscarConexao();
             String s = "";
             try
             {
-                
-              
+
+
                 SqlCommand cmdSELECTvoo = new SqlCommand(selectVOO, conn);
                 using (SqlDataReader reader = cmdSELECTvoo.ExecuteReader())
                 {
 
                     Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS VOO <<<");
-                    Console.WriteLine("\nID\tDestino\tData Voo\tDataCadastro\tQuantidade Assentos Ocupados\tSituacao\n");
+                    Console.WriteLine("\nID\tDestino\t\tData Voo\tDataCadastro\tQuantidade Assentos Ocupados\tSituacao ");
                     while (reader.Read()) // enquanto tiver leitura para fazer
                     {
                         s = reader.GetString(0);
                         Console.Write("{0}\t", reader.GetString(0));
                         Console.Write("{0}\t", reader.GetString(1));
-                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write("\t{0}\t", reader.GetDateTime(2).ToShortDateString());
                         Console.Write("{0}\t", reader.GetDateTime(3).ToShortDateString());
-                        Console.WriteLine("{0}\t", reader.GetInt32(4));
+                        Console.Write("\t{0}\t\t\t", reader.GetInt32(4));
                         Console.WriteLine("{0}\t", reader.GetString(5));
 
                     }
@@ -798,10 +729,10 @@ namespace AeroportoBD
             catch (SqlException)
             {
                 Console.Write("Não foi possível imprimir");
-              
+
             }
 
-          
+
             Console.ReadKey();
             return s;
         } // OK
@@ -812,7 +743,7 @@ namespace AeroportoBD
             String s = "";
             try
             {
-               
+
                 SqlCommand cmdSELECTVOO = new SqlCommand(selectVOO, conn);
                 using (SqlDataReader reader = cmdSELECTVOO.ExecuteReader())
                 {
@@ -830,23 +761,57 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
             Console.ReadKey();
             return v;
 
 
 
         }
-        #endregion
 
-        #region Passagem
-        public int ContaP( String selectV)
+        public int ContaV(String selectQtdOcp)
         {
             var conn = BuscarConexao();
             int s = 0;
             try
             {
-              
+
+                SqlCommand cmdSELECTContaP = new SqlCommand(selectQtdOcp, conn);
+                using (SqlDataReader reader = cmdSELECTContaP.ExecuteReader())
+                {
+
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    {
+
+                        s = reader.GetInt32(0);
+
+
+                    }
+
+                }
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+
+            Console.ReadKey();
+            return s;
+        } //assentos ocupados
+
+
+        #endregion
+
+        #region Passagem
+        public int ContaP(String selectV)
+        {
+            var conn = BuscarConexao();
+            int s = 0;
+            try
+            {
+
                 SqlCommand cmdSELECTContaP = new SqlCommand(selectV, conn);
                 using (SqlDataReader reader = cmdSELECTContaP.ExecuteReader())
                 {
@@ -867,10 +832,78 @@ namespace AeroportoBD
             {
                 Console.Write("Não foi possível imprimir");
             }
-          
+
             Console.ReadKey();
             return s;
+        } //passagens livre
+        public Passagem VerPassagem(String selectR)
+        {
+            var conn = BuscarConexao();
+            Passagem pass = new();
+
+            try
+            {
+
+                SqlCommand cmdSELECTpassagem = new SqlCommand(selectR, conn);
+                using (SqlDataReader reader = cmdSELECTpassagem.ExecuteReader())
+                {
+
+
+                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    {
+
+                        pass = new Passagem(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2), reader.GetDouble(3), char.Parse(reader.GetString(4)));
+
+
+                    }
+                }
+
+
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+
+            Console.ReadKey();
+            return pass;
         }
+        public String SelectPassagem(String selectR)
+        {
+            var conn = BuscarConexao();
+            String s = "";
+            try
+            {
+
+                SqlCommand cmdSELECTPassagem = new SqlCommand(selectR, conn);
+                using (SqlDataReader reader = cmdSELECTPassagem.ExecuteReader())
+                {
+
+                    Console.WriteLine(">>> INÍCIO IMPRESSÃO DOS DADOS HISTÓRICO <<<"); // Reservadas / Pagas
+                    Console.WriteLine("\nIDPASSAGEM\tIDVOO\tDataUltimaOperacao\tValorUnitario\tSituacao ");
+                    while (reader.Read()) // enquanto tiver leitura para fazer, faz
+                    {
+
+                        // s = reader.GetString(0);
+                        Console.Write("PA{0}\t", reader.GetInt32(0));
+                        Console.Write("\t{0}\t", reader.GetString(1));
+                        Console.Write("{0}\t", reader.GetDateTime(2).ToShortDateString());
+                        Console.Write("\t\t{0}\t", reader.GetDouble(3));
+                        Console.WriteLine("{0}\t", char.Parse(reader.GetString(4)));
+
+                    }
+                    Console.WriteLine("Fim da Impressão!");
+
+                }
+            }
+            catch (SqlException)
+            {
+                Console.Write("Não foi possível imprimir");
+            }
+
+            Console.ReadKey();
+            return s;
+        }  
 
         #endregion
 

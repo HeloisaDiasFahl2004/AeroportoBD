@@ -96,7 +96,7 @@ namespace AeroportoBD
                             idvoogerado = ("V" + random.Next(1000, 9999).ToString());
                             string BuscarVoo = $"SELECT * FROM VOO WHERE IDVOO='{idvoogerado}";
 
-                            if (!string.IsNullOrEmpty(bd.SelectPassagem(idvoogerado)))
+                            if (!string.IsNullOrEmpty(bd.SelectPassagem(BuscarVoo)))
                             {
                                 encontrado = true;
                                 break;
@@ -1937,7 +1937,7 @@ namespace AeroportoBD
 
             string selectReserva = $"SELECT IDPASSAGEM,IDVOO,DataUltimaOperacao ,ValorUnitario,Situacao FROM Passagem WHERE Situacao='{'R'}'";
             bd.SelectPassagem(selectReserva);
-
+           
             Pausa();
             TelaVendas();
         }  //OK
@@ -2070,11 +2070,11 @@ namespace AeroportoBD
                         cpf = ValidarEntrada("cpflogin");
                         if (cpf == null) TelaInicial();
                         Console.WriteLine("\nInforme a quantidade de passagens (máximo 4): \n1  2  3  4");
-                        quantPassagem = int.Parse(Console.ReadLine());
+                        quantPassagem = int.Parse(ValidarEntrada("menu"));
                         if (quantPassagem > 0 && quantPassagem <= 4)
                         {
                             string conta = $"SELECT COUNT (*) FROM PASSAGEM WHERE IDVOO='{idvoo}'AND Situacao='{'L'}' ;";
-                            int contagem = bd.ContaP(conta);
+                            int contagem = bd.ContaP(conta); //retorna um inteiro
                             if (contagem < quantPassagem) //SE A QUANTIDADE DE PASSAGENS SOLICITADAS FOR MAIOR DOQ A QUANTIDADE DE PASSAGENS DISPONÍVEIS
                             {
                                 Console.WriteLine("Não possui esta quantidade de passagens disponíveis: ");
@@ -2083,8 +2083,6 @@ namespace AeroportoBD
                             }
                             do
                             {
-                                
-
                                 string livre = $"SELECT TOP 1 * FROM PASSAGEM WHERE IDVOO='{idvoo}'AND Situacao='{'L'}' ;";
                                 pass = bd.VerPassagem(livre);
                                 string updatePassagem = $"UPDATE Passagem set Situacao = '{(opc == 1 ? 'P' : 'R')}' WHERE IDVOO='{idvoo}'AND IDPASSAGEM='{pass.IDPassagem}';";//if ternário
@@ -2098,22 +2096,19 @@ namespace AeroportoBD
                                     Venda venda = new Venda( IDVenda, System.DateTime.Now, (pass.ValorUnitario * quantPassagem), cpf);
                                     string insertVENDA = $"INSERT INTO Venda(IDVENDA,DataVenda,ValorTotal,CPF) VALUES('{venda.IDVenda}'," + $"'{venda.DataVenda}','{venda.ValorTotal}','{cpf}')";
                                     bd.InsertDado(insertVENDA);
-                                    string updatePassageiro = $"UPDATE Passageiro set DataUltimaCompra = '{System.DateTime.Now}' WHERE CPF='{cpf}';";
-                                    bd.UpdateDado(updatePassageiro);
+                                  
 
                                 }
                                 VendaPassagem item = new VendaPassagem(GeradorId("iditemvenda"), IDVenda, pass.ValorUnitario);
 
                                 string insertITEMVENDA = $"INSERT INTO VendaPassagem(IDITEMVENDA,IDVENDA,ValorUnitario) VALUES('{item.IDItemVenda}'," + $"'{item.IDVenda}','{item.ValorUnitario}')";
                                 bd.InsertDado(insertITEMVENDA);
-                                //string VerVooAssentos = $"SELECT * FROM Voo WHERE IDVOO='{idvoo}';";
-                                //Voo v = bd.VerVoo(VerVooAssentos);
-                                //if (v != null)
-                                //{
-                                //    string AssentosOcupados = $"UPDATE VOO set QuantidadesAssentosOcupados='{(v.QuantidadeAssentosOcupados + quantPassagem)}' WhHERE IDVOO='{idvoo}'";
 
-                                //}
-
+                                conta = $"SELECT COUNT (*) FROM PASSAGEM WHERE IDVOO='{idvoo}'AND Situacao='{'P'}' or Situacao='{'R'}' ;";
+                                contagem = bd.ContaV(conta);
+                               
+                                string AssentosOcupados = $"UPDATE VOO set QuantidadeAssentosOcupados='{(contagem)}' WHERE IDVOO='{idvoo}'";
+                                bd.UpdateDado(AssentosOcupados);
                                 cont++;
 
                             } while (cont < quantPassagem);
@@ -2280,8 +2275,8 @@ namespace AeroportoBD
                     case 6:
                         Console.WriteLine("Confirmação de seu CNPJ ");
                         string cnpj = ValidarEntrada("cnpjexiste");
-                        String selectComp = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
-                        bd.SelectCompanhiaAerea(selectComp);
+                     //   String selectComp = $"SELECT CNPJ,RazaoSocial,DataAbertura,DataUltimoVoo,DataCadastro,Situacao FROM CompanhiaAerea WHERE CNPJ=('{cnpj}');";
+                     //   bd.SelectCompanhiaAerea(selectComp);
                         break;
                     case 7:
                         string verAeroporto = $"SELECT IATA FROM Aeroporto ;";
@@ -2815,19 +2810,19 @@ namespace AeroportoBD
                         Console.Clear();
                         Console.WriteLine("Cnpj adiconado com sucesso");
                         Pausa();
-                        TelaInicialCpfRestritos();
+                        TelaInicialCnpjRestritos();
                         break;
                     case 3:
                         Console.Write("Informe o CNPJ que deseja excluir: ");
                         string cnpj = ValidarEntrada("cnpjexiste");
-                        if (cnpj == null) TelaInicialCpfRestritos();
+                        if (cnpj == null) TelaInicialCnpjRestritos();
                         string removeBloq = $"DELETE FROM Bloqueado WHERE CNPJ='{cnpj}';";
                         bd.DeleteDado(removeBloq);
 
                         Console.Clear();
                         Console.WriteLine("Cnpj Removido com sucesso!");
                         Pausa();
-                        TelaInicialCpfRestritos();
+                        TelaInicialCnpjRestritos();
                         break;
                 }
 
