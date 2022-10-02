@@ -36,7 +36,7 @@ CREATE TABLE Bloqueado(
 	CONSTRAINT PK_CNPJ_Bloqueado PRIMARY KEY(CNPJ)
 );
 
-CREATE TABLE Aeoroporto(
+CREATE TABLE Aeroporto(
 	IATA varchar(3)
 
 	CONSTRAINT PK_IATA_Aeroporto PRIMARY KEY (IATA)
@@ -66,7 +66,7 @@ CREATE TABLE Voo(
 );
 
 CREATE TABLE Passagem(
-	IDPASSAGEM varchar(6) not null, --PA0000
+	IDPASSAGEM int  not null, 
 	IDVOO varchar (5) not null, --V0000
 	
 	DataUltimaOperacao date not null,
@@ -95,15 +95,47 @@ CREATE TABLE VendaPassagem(--ITEM VENDA
 	FOREIGN KEY (IDVENDA) references Venda(IDVENDA),
 );
 
+
+insert into Aeroporto (Iata) values ('BSB'),('CGH'),('GIG'),('SSA'),('FLN'),('POA'),('VCP'),('REC'),('CWB'),('BEL'),('VIX'),('SDU'),('CGB'),('CGR'),('FOR'),('MCP'),('MGF'),('GYN'),('NVT'),('MAO'),('NAT'),('BPS'),('MCZ'),('PMW'),('SLZ'),('GRU'),('LDB'),('PVH'),('RBR'),('JOI'),('UDI'),('CXJ'),('IGU'),('THE'),('AJU'),('JPA'),('PNZ'),('CNF'),('BVB'),('CPV'),('STM'),('IOS'),('JDO'),('IMP'),('XAP'),('MAB'),('CZS'),('PPB'),('CFB'),('FEN'),('JTC'),('MOC');
+select * from Aeroporto;
+
+CREATE PROCEDURE CadastroPassagens (@valor float)
+AS 
+    BEGIN
+	declare 
+	@idPassagem int,
+	@idVoo varchar(5),
+	@count int = 0,
+	@situacao char= 'L', 
+	@qtd int,
+	@dataUltimaOperacao DateTime = GetDate()
+
+	SELECT @idVoo  = MAX(IdVoo) FROM dbo.Voo
+	SELECT @idPassagem = MAX(idPassagem) FROM dbo.Passagem
+	SELECT @qtd = capacidade FROM aeronave, voo WHERE   iDVOO = @idVoo
+	SELECT @idPassagem = ISNULL(@idPassagem,1)
+	
+	WHILE @count <= @qtd
+		BEGIN
+	        INSERT INTO dbo.passagem (idPassagem, idVoo, ValorUnitario, situacao, DataUltimaOperacao) VALUES(@idPassagem, @idVoo, @valor, @situacao, @dataUltimaOperacao)
+			SET @count = @count + 1
+			SET @idPassagem = @idPassagem + 1
+		END
+END
+
+
+/* Ver se a tabela está sendo montada certo
+
 select * from CompanhiaAerea 
 select * from  Passageiro
-select *  from  Aeronave
+select *  from Aeronave
 select * from VendaPassagem
 select * from Venda
 select * from Passagem
 select * from Voo
-select * from Aeoroporto
-select * from Bloqueado
-select * from restrito
 
---65084691000102
+select * from Aeroporto
+select * from Bloqueado
+select * from Restrito
+
+*/
